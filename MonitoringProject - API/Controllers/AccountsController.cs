@@ -7,9 +7,9 @@ namespace MonitoringProject___API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : BaseController<Role, RoleRepository, int>
+    public class AccountsController : BaseController<Account, AccountRepository, int>
     {
-        public RolesController(RoleRepository repository) : base(repository)
+        public AccountsController(AccountRepository repository) : base(repository)
         {
         }
     }

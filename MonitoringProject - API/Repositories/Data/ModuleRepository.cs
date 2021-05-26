@@ -3,9 +3,9 @@ using MonitoringProject___API.Models;
 
 namespace MonitoringProject___API.Repositories.Data
 {
-    public class RoleRepository : GeneralRepository<Role, int>
+    public class ModuleRepository : GeneralRepository<Module, int>
     {
-        public RoleRepository(MyContext context) : base(context)
+        public ModuleRepository(MyContext context) : base(context)
         {
         }
     }

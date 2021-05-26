@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MonitoringProject___API.Models
 {
@@ -15,5 +12,11 @@ namespace MonitoringProject___API.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public int RoleID { get; set; }
+        public Role Role { get; set; }
+        public Account Account { get; set; }
+        public ICollection<Project> Projects { get; set; }
+        public ICollection<Module> Modules { get; set; }
+        public ICollection<Task> Tasks { get; set; }
+        public ICollection<Report> Reports { get; set; }
     }
 }
