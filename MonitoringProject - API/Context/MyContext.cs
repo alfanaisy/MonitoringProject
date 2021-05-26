@@ -60,6 +60,10 @@ namespace MonitoringProject___API.Context
                 .WithMany(m => m.Tasks)
                 .HasForeignKey(t => t.ModuleID);
 
+            //user: email unique
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }
