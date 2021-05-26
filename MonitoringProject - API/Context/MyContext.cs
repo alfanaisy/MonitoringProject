@@ -14,7 +14,14 @@ namespace MonitoringProject___API.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<Module> Modules { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Report> Reports { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
+        public DbSet<ModuleUser> ModuleUsers { get; set; }
+        public DbSet<TaskUser> TaskUsers { get; set; }
+        public DbSet<UserReport> UserReports { get; set; }
+        public DbSet<ReportProject> ReportProjects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,16 +39,16 @@ namespace MonitoringProject___API.Context
                 .HasKey(pu => new { pu.ProjectID, pu.UserID });
             //user - module
             modelBuilder.Entity<ModuleUser>()
-                .HasKey(pu => new { pu.ModuleID, pu.UserID });
+                .HasKey(mu => new { mu.ModuleID, mu.UserID });
             //user - task
             modelBuilder.Entity<TaskUser>()
-                .HasKey(pu => new { pu.TaskID, pu.UserID });
+                .HasKey(tu => new { tu.TaskID, tu.UserID });
             //user - report
             modelBuilder.Entity<UserReport>()
-                .HasKey(pu => new { pu.ReportID, pu.UserID });
+                .HasKey(ur => new { ur.ReportID, ur.UserID });
             //project - report
             modelBuilder.Entity<ReportProject>()
-                .HasKey(pu => new { pu.ReportID, pu.ProjectID });
+                .HasKey(rp => new { rp.ReportID, rp.ProjectID });
             //project - module
             modelBuilder.Entity<Module>()
                 .HasOne(m => m.Project)
