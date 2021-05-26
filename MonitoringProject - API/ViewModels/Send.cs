@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace MonitoringProject___API.ViewModels
 {
-    public class Register
+    public class Send
     {
-
     }
 }
