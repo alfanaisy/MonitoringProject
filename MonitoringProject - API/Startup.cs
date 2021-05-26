@@ -9,7 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MonitoringProject___API.Context;
+using MonitoringProject___API.Repositories;
 using MonitoringProject___API.Repositories.Data;
+using MonitoringProject___API.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +64,8 @@ namespace MonitoringProject___API
             services.AddScoped<TaskRepository>();
             services.AddScoped<ProjectUserRepository>();
             services.AddScoped<ModuleUserRepository>();
+
+            services.AddScoped<IGenericDapper, GeneralDapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
