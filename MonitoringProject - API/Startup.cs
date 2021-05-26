@@ -36,6 +36,8 @@ namespace MonitoringProject___API
             services.AddScoped<UserRepository>();
             services.AddScoped<RoleRepository>();
             services.AddScoped<AccountRepository>();
+            services.AddScoped<ProjectRepository>();
+            services.AddScoped<ProjectUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

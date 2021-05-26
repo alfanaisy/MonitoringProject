@@ -18,7 +18,7 @@ namespace MonitoringProject___API.Models
         public int Priority { get; set; }
         public int ModuleID { get; set; }
         public Module Module { get; set; }
-        public ICollection<User> Users { get; set; }
+        public ICollection<TaskUser> TaskUsers { get; set; }
         public ICollection<Report> Reports { get; set; }
     }
 }

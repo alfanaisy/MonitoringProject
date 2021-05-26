@@ -16,7 +16,7 @@ namespace MonitoringProject___API.Models
         public DateTime EndDate { get; set; }
         public string Status { get; set; }
         public ICollection<Module> Modules { get; set; }
-        public ICollection<User> Users { get; set; }
-        public ICollection<Report> Reports { get; set; }
+        public ICollection<ProjectUser> ProjectUsers { get; set; }
+        public ICollection<ReportProject> ReportProjects { get; set; }
     }
 }

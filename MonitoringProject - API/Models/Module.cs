@@ -18,5 +18,6 @@ namespace MonitoringProject___API.Models
         public int ProjectID { get; set; }
         public Project Project { get; set; }
         public ICollection<Task> Tasks { get; set; }
+        public ICollection<ModuleUser> ModuleUsers { get; set; }
     }
 }

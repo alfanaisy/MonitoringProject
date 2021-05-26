@@ -14,9 +14,9 @@ namespace MonitoringProject___API.Models
         public int RoleID { get; set; }
         public Role Role { get; set; }
         public Account Account { get; set; }
-        public ICollection<Project> Projects { get; set; }
-        public ICollection<Module> Modules { get; set; }
-        public ICollection<Task> Tasks { get; set; }
-        public ICollection<Report> Reports { get; set; }
+        public ICollection<ProjectUser> ProjectUsers { get; set; }
+        public ICollection<ModuleUser> ModuleUsers { get; set; }
+        public ICollection<TaskUser> TaskUsers { get; set; }
+        public ICollection<UserReport> UserReports { get; set; }
     }
 }

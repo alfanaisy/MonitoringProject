@@ -15,7 +15,7 @@ namespace MonitoringProject___API.Models
         public DateTime ReportDate { get; set; }
         public int TaskID { get; set; }
         public Task Task { get; set; }
-        public ICollection<User> Users { get; set; }
-        public ICollection<Project> Projects { get; set; }
+        public ICollection<UserReport> UserReports { get; set; }
+        public ICollection<ReportProject> ReportProjects { get; set; }
     }
 }
