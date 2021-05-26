@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MonitoringProject___API.Base;
+using MonitoringProject___API.Context;
 using MonitoringProject___API.Models;
 using MonitoringProject___API.Repositories.Data;
 
