@@ -30,6 +30,29 @@ namespace MonitoringProject___API.Context
             //user - project
             modelBuilder.Entity<ProjectUser>()
                 .HasKey(pu => new { pu.ProjectID, pu.UserID });
+            //user - module
+            modelBuilder.Entity<ModuleUser>()
+                .HasKey(pu => new { pu.ModuleID, pu.UserID });
+            //user - task
+            modelBuilder.Entity<TaskUser>()
+                .HasKey(pu => new { pu.TaskID, pu.UserID });
+            //user - report
+            modelBuilder.Entity<UserReport>()
+                .HasKey(pu => new { pu.ReportID, pu.UserID });
+            //project - report
+            modelBuilder.Entity<ReportProject>()
+                .HasKey(pu => new { pu.ReportID, pu.ProjectID });
+            //project - module
+            modelBuilder.Entity<Module>()
+                .HasOne(m => m.Project)
+                .WithMany(p => p.Modules)
+                .HasForeignKey(m => m.ProjectID);
+            //module - task
+            modelBuilder.Entity<Task>()
+                .HasOne(t => t.Module)
+                .WithMany(m => m.Tasks)
+                .HasForeignKey(t => t.ModuleID);
+
         }
     }
 }

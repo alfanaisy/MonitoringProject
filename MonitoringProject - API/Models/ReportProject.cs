@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace MonitoringProject___API.Models
 {
-    [Table("TB_T_ProjectUser")]
-    public class ProjectUser
+    [Table("TB_T_ReportProject")]
+    public class ReportProject
     {
+        public int ReportID { get; set; }
+        public Report Report { get; set; }
         public int ProjectID { get; set; }
         public Project Project { get; set; }
-        public int UserID { get; set; }
-        public User User { get; set; }
     }
 }
