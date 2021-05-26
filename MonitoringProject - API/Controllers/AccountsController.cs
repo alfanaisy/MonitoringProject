@@ -11,8 +11,10 @@ namespace MonitoringProject___API.Controllers
     [ApiController]
     public class AccountsController : BaseController<Account, AccountRepository, int>
     {
+        private readonly AccountRepository repository;
         public AccountsController(AccountRepository repository) : base(repository)
         {
+            this.repository = repository;
         }
     }
 }
