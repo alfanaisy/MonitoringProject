@@ -41,8 +41,7 @@ namespace MonitoringProject___API
                 c.SwaggerDoc("v1.0", new OpenApiInfo
                 {
                     Version = "v1.0",
-                    Title = "ToDo API",
-                    Description = "A simple example"
+                    Title = "MonitoringProject API"
                 });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -62,8 +61,12 @@ namespace MonitoringProject___API
             services.AddScoped<ProjectRepository>();
             services.AddScoped<ModuleRepository>();
             services.AddScoped<TaskRepository>();
+            services.AddScoped<ReportRepository>();
             services.AddScoped<ProjectUserRepository>();
             services.AddScoped<ModuleUserRepository>();
+            services.AddScoped<TaskUserRepository>();
+            services.AddScoped<UserReportRepository>();
+            services.AddScoped<ReportProjectRepository>();
 
             services.AddScoped<IGenericDapper, GeneralDapper>();
         }
