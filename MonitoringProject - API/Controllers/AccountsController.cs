@@ -12,6 +12,7 @@ using MonitoringProject___API.ViewModels;
 using System;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,28 @@ namespace MonitoringProject___API.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        [HttpPost("Change-Pass")]
+        public ActionResult ChangePass(Change change)
+        {
+            var account = context.Accounts.FirstOrDefault(account => account.User.Email == change.Email);
+            if (account != null)
+            {
+                if (BCrypt.Net.BCrypt.Verify(change.Password, account.Password))
+                {
+                    account.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
+                    var result = repository.Put(account) > 0 ? (ActionResult)Ok("Data berhasil diupdate") : BadRequest("Data gagal diupdate");
+                    //return result;
+                    //var data = accountRepository.ChangePassword(changePasswordVM.Email, changePasswordVM.NewPassword);
+                    return Ok(new { message = "Password Changed", status = "Ok" });
+                }
+                else
+                {
+                    return StatusCode(404, new { status = "404", message = "Wrong password" });
+                }
+            }
+            return NotFound();
         }
     }
 }
