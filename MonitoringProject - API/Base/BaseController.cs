@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.Repositories.Interfaces;
 using System;
 
@@ -18,6 +19,7 @@ namespace MonitoringProject___API.Base
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult Get()
         {
             try

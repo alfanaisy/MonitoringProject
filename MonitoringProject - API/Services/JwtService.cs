@@ -15,13 +15,13 @@ namespace MonitoringProject___API.Services
         private readonly string _secret;
         private readonly string _expDate;
 
-
         public JwtService(IConfiguration config)
         {
             _secret = config.GetSection("JWT").GetSection("Secret").Value;
             _expDate = config.GetSection("JWT").GetSection("expirationInMinutes").Value;
         }
 
+        //login token generator
         public string GenerateSecurityToken(string name, string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -41,9 +41,9 @@ namespace MonitoringProject___API.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
-
         }
 
+        //forgot password token generator
         public string GenerateSecurityToken(string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
