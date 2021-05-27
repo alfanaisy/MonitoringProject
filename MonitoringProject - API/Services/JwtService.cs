@@ -38,6 +38,10 @@ namespace MonitoringProject___API.Services
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(_expDate)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+            //tokenDescriptor.Issuer = "localhost";
+            //tokenDescriptor.Audience = "localhost";
+            tokenDescriptor.Issuer = "Alfan";
+            tokenDescriptor.Audience = "Daniel";
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
@@ -58,7 +62,8 @@ namespace MonitoringProject___API.Services
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(_expDate)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-
+            tokenDescriptor.Issuer = "Alfan";
+            tokenDescriptor.Audience = "Daniel";
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);

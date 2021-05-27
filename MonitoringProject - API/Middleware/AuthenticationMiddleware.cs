@@ -27,10 +27,10 @@ namespace MonitoringProject___API.Middleware
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    // ValidIssuer = "localhost",
-                    // ValidAudience = "localhost"
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = "Alfan",
+                    ValidAudience = "Daniel"
                 };
             });
 
