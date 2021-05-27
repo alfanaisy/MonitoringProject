@@ -18,6 +18,7 @@ namespace MonitoringProject___API.Base
             this.repository = repository;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Get()
         {

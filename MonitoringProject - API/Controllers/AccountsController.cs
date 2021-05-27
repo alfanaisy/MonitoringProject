@@ -146,6 +146,29 @@ namespace MonitoringProject___API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPut("change-password")]
+        [Authorize]
+        public ActionResult ChangePass(Change change)
+        {
+            var currentUser = HttpContext.User.Claims.ToList();
+
+            var email = currentUser.FirstOrDefault(c => c.Type.Contains("email")).Value;
+            var isValid = context.Accounts.SingleOrDefault(u => u.User.Email == email);
+
+            if (BCrypt.Net.BCrypt.Verify(change.OldPassword, isValid.Password))
+            {
+                isValid.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
+                var result = repository.Put(isValid);
+                if (result > 0)
+                {
+                    return Ok(new { Status = "Success", Message = "Password has been changed" });
+                }
+            }
+
+            return BadRequest();
+        }
+
         [HttpGet("random-token")]
         public string GetRandomToken()
         {
