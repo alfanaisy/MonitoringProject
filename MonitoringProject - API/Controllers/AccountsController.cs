@@ -147,28 +147,28 @@ namespace MonitoringProject___API.Controllers
             return BadRequest();
         }
 
-        [HttpPost("Change-Pass")]
+        [HttpPut("change-password")]
+        [Authorize]
         public ActionResult ChangePass(Change change)
         {
-            var account = context.Accounts.FirstOrDefault(account => account.User.Email == change.Email);
-            if (account != null)
+            var currentUser = HttpContext.User.Claims.ToList();
+
+            var email = currentUser.FirstOrDefault(c => c.Type.Contains("email")).Value;
+            var isValid = context.Accounts.SingleOrDefault(u => u.User.Email == email);
+
+            if (BCrypt.Net.BCrypt.Verify(change.OldPassword, isValid.Password))
             {
-                if (BCrypt.Net.BCrypt.Verify(change.Password, account.Password))
+                isValid.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
+                var result = repository.Put(isValid);
+                if (result > 0)
                 {
-                    account.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
-                    var result = repository.Put(account) > 0 ? (ActionResult)Ok("Data berhasil diupdate") : BadRequest("Data gagal diupdate");
-                    //return result;
-                    //var data = accountRepository.ChangePassword(changePasswordVM.Email, changePasswordVM.NewPassword);
-                    return Ok(new { message = "Password Changed", status = "Ok" });
-                }
-                else
-                {
-                    return StatusCode(404, new { status = "404", message = "Wrong password" });
+                    return Ok(new { Status = "Success", Message = "Password has been changed" });
                 }
             }
-            return NotFound();
+
+            return BadRequest();
         }
-        
+
         [HttpGet("random-token")]
         public string GetRandomToken()
         {
