@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace MonitoringProject___API.ViewModels
 {
-    public class Forgot
+    public class Reset
     {
-        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

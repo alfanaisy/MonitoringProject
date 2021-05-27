@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -106,8 +107,44 @@ namespace MonitoringProject___API.Controllers
             }
             catch (Exception)
             {
-                return Unauthorized();
+                return BadRequest();
             }
+        }
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(Forgot forgot)
+        {
+            var jwt = new JwtService(config);
+            var emailService = new EmailService(config, context);
+            var isValid = context.Users.SingleOrDefault(u => u.Email == forgot.Email);
+            if(isValid != null)
+            {
+                var token = jwt.GenerateSecurityToken(forgot.Email);
+                var url = "https://localhost:44380/api/accounts/reset-password?token=" + token;
+                string subject = "Reset Password";
+                emailService.SendEmail(config.GetSection("EmailSettings").GetSection("Mail").Value, subject, forgot.Email, url);
+                return Ok(new { token, Status = "Success", Message = "Email has been sent to your address with further instruction." });
+            }
+            return NotFound(new { Status = "Error", Message = "This email does not exist in our database." });
+        }
+
+        [HttpPut("reset-password")]
+        [Authorize]
+        public IActionResult ResetPassword(Reset reset)
+        {
+            var currentUser = HttpContext.User.Claims.ToList();
+
+            var email = currentUser.FirstOrDefault(c => c.Type.Contains("email")).Value;
+            var isValid = context.Accounts.SingleOrDefault(u => u.User.Email == email);
+
+            isValid.Password = BCrypt.Net.BCrypt.HashPassword(reset.Password);
+
+            var result = repository.Put(isValid);
+            if (result > 0)
+            {
+                return Ok(new { Status = "Success", Message = "Password has been reset" });
+            }
+            return BadRequest();
         }
 
         [HttpPost("Change-Pass")]
