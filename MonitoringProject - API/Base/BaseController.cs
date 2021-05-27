@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.Repositories.Interfaces;
 using System;
 
@@ -17,6 +18,7 @@ namespace MonitoringProject___API.Base
             this.repository = repository;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Get()
         {
