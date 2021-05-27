@@ -19,7 +19,6 @@ namespace MonitoringProject___API.Base
         }
 
         [HttpGet]
-        [Authorize]
         public ActionResult Get()
         {
             try
@@ -88,7 +87,6 @@ namespace MonitoringProject___API.Base
             {
                 return BadRequest(e.InnerException);
             }
-
         }
     }
 }

@@ -146,5 +146,12 @@ namespace MonitoringProject___API.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("random-token")]
+        public string GetRandomToken()
+        {
+            var jwt = new JwtService(config);
+            var token = jwt.GenerateSecurityToken("fake@email.com");
+            return token;
+        }
     }
 }
