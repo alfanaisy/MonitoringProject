@@ -18,8 +18,8 @@ namespace MonitoringProject___API.Base
             this.repository = repository;
         }
 
-        [Authorize]
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Get()
         {
             try
@@ -35,6 +35,7 @@ namespace MonitoringProject___API.Base
 
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult Get(TId id)
         {
             try

@@ -149,7 +149,7 @@ namespace MonitoringProject___API.Controllers
 
         [HttpPut("change-password")]
         [Authorize]
-        public ActionResult ChangePass(Change change)
+        public ActionResult ChangePassword(Change change)
         {
             var currentUser = HttpContext.User.Claims.ToList();
 
@@ -167,6 +167,13 @@ namespace MonitoringProject___API.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("test-pm")]
+        [Authorize(Roles = "Project Manager")]
+        public IActionResult PMTest()
+        {
+            return Ok(new { Message = "Project Manager Only" });
         }
     }
 }

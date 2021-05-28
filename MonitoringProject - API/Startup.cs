@@ -56,6 +56,21 @@ namespace MonitoringProject___API
                     Type = SecuritySchemeType.Http,
                     Scheme = "Bearer"
                 });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        }, new List<string>()
+                    }
+                    
+                });
             });
 
             services.AddScoped<UserRepository>();
