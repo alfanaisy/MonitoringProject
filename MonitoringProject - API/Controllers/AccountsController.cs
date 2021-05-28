@@ -132,14 +132,16 @@ namespace MonitoringProject___API.Controllers
         [Authorize]
         public IActionResult ResetPassword(Reset reset)
         {
-            var currentUser = HttpContext.User.Claims.ToList();
+            string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var jwtReader = new JwtSecurityTokenHandler();
+            var jwt = jwtReader.ReadJwtToken(token);
 
-            var email = currentUser.FirstOrDefault(c => c.Type.Contains("email")).Value;
-            var isValid = context.Accounts.SingleOrDefault(u => u.User.Email == email);
+            var email = jwt.Claims.First(c => c.Type == "email").Value;
+            var isExist = context.Accounts.FirstOrDefault(u => u.User.Email == email);
 
-            isValid.Password = BCrypt.Net.BCrypt.HashPassword(reset.Password);
+            isExist.Password = BCrypt.Net.BCrypt.HashPassword(reset.Password);
 
-            var result = repository.Put(isValid);
+            var result = repository.Put(isExist);
             if (result > 0)
             {
                 return Ok(new { Status = "Success", Message = "Password has been reset" });
@@ -151,15 +153,17 @@ namespace MonitoringProject___API.Controllers
         [Authorize]
         public ActionResult ChangePassword(Change change)
         {
-            var currentUser = HttpContext.User.Claims.ToList();
+            string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var jwtReader = new JwtSecurityTokenHandler();
+            var jwt = jwtReader.ReadJwtToken(token);
 
-            var email = currentUser.FirstOrDefault(c => c.Type.Contains("email")).Value;
-            var isValid = context.Accounts.SingleOrDefault(u => u.User.Email == email);
+            var email = jwt.Claims.First(c => c.Type == "email").Value;
+            var isExist = context.Accounts.FirstOrDefault(u => u.User.Email == email);
 
-            if (BCrypt.Net.BCrypt.Verify(change.OldPassword, isValid.Password))
+            if (BCrypt.Net.BCrypt.Verify(change.OldPassword, isExist.Password))
             {
-                isValid.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
-                var result = repository.Put(isValid);
+                isExist.Password = BCrypt.Net.BCrypt.HashPassword(change.NewPassword);
+                var result = repository.Put(isExist);
                 if (result > 0)
                 {
                     return Ok(new { Status = "Success", Message = "Password has been changed" });
