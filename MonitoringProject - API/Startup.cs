@@ -69,8 +69,8 @@ namespace MonitoringProject___API
                             }
                         }, new List<string>()
                     }
-                    
                 });
+
             });
 
             services.AddScoped<UserRepository>();

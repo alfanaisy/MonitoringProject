@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.Base;
 using MonitoringProject___API.Models;
@@ -12,6 +13,7 @@ namespace MonitoringProject___API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ModuleUsersController : BaseController<ModuleUser, ModuleUserRepository, int>
     {
         public ModuleUsersController(ModuleUserRepository repository) : base(repository)

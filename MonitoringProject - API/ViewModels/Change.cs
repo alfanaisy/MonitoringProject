@@ -8,7 +8,6 @@ namespace MonitoringProject___API.ViewModels
     public class Change
     {
         public string OldPassword { get; set; }
-
         public string NewPassword { get; set; }
     }
 }
