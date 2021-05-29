@@ -114,5 +114,17 @@ namespace MonitoringProject___API.Repositories
 
             return result;
         }
+
+        List<T> IGenericDapper.GetAllNoParam<T>(string query, CommandType commandType)
+        {
+            using IDbConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
+            return db.Query<T>(query, commandType).ToList();
+        }
+
+        T IGenericDapper.GetNoParam<T>(string query, CommandType commandType)
+        {
+            using IDbConnection db = new SqlConnection(_config.GetConnectionString(Connectionstring));
+            return db.Query<T>(query, commandType).FirstOrDefault();
+        }
     }
 }
