@@ -16,5 +16,8 @@ namespace MonitoringProject___API.Repositories.Interfaces
         int Execute(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
         T Insert<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
         T Update<T>(string sp, DynamicParameters parms, CommandType commandType = CommandType.StoredProcedure);
+        //my custom dapper
+        List<T> GetAllNoParam<T>(string query, CommandType commandType = CommandType.Text);
+        T GetNoParam<T>(string query, CommandType commandType = CommandType.Text);
     }
 }

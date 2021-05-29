@@ -42,7 +42,7 @@ namespace MonitoringProject___API.Controllers
             if (isExist != null)
             {
                 var dbparams = new DynamicParameters();
-                dbparams.Add("ManagerId", isExist.UserID, DbType.String);
+                dbparams.Add("ManagerId", isExist.UserID, DbType.Int32);
                 dbparams.Add("ProjectName", project.ProjectName, DbType.String);
                 dbparams.Add("Description", project.Description, DbType.String);
                 dbparams.Add("StartDate", project.StartDate, DbType.DateTime);
@@ -60,12 +60,10 @@ namespace MonitoringProject___API.Controllers
         [HttpGet("get-members")]
         public List<User> GetMembers()
         {
+            string query = "SELECT * FROM [dbo].[TB_M_User] WHERE RoleID=2"; 
             try
             {
-                var dbparams = new DynamicParameters();
-                dbparams.Add("RoleId", 2, DbType.Int32);
-
-                List<User> Members = dapper.GetAll<User>("[dbo].[SP_GetMembers]", dbparams, commandType: CommandType.StoredProcedure);
+                List<User> Members = dapper.GetAllNoParam<User>(query, CommandType.Text);
 
                 return Members;
             }

@@ -35,6 +35,7 @@ namespace MonitoringProject___API.Controllers
             return Members;
         }
 
+        //or use Session instead
         [HttpGet("get-project-id")]
         public int GetProjectId(int taskId)
         {
