@@ -56,7 +56,7 @@ namespace MonitoringProject___API.Controllers
 
         [HttpGet("get-task-by-user")]
         [Authorize(Roles = "Project Member")]
-        public List<Task> GetTaskByUser()
+        public IActionResult GetTaskByUser()
         {
             try
             {
@@ -73,11 +73,11 @@ namespace MonitoringProject___API.Controllers
 
                 List<Task> Tasks = dapper.GetAll<Task>("[dbo].[SP_GetTaskByUser]", dbparams, CommandType.StoredProcedure);
 
-                return Tasks;
+                return Ok(Tasks);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                return NoContent();
             }
         }
     }
