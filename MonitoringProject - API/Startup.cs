@@ -47,15 +47,11 @@ namespace MonitoringProject___API
                     builder =>
                     {
                         builder
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
-                            .WithOrigins("https://localhost:44343")
-                            //.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                             .AllowCredentials()
-                            .AllowAnyHeader()
-                        .Build();
+                        .WithOrigins("https://www.test-cors.org", "https://localhost:44343")
+                        .AllowAnyHeader().WithMethods("POST", "PUT", "GET");
                     });
             });
+
 
             services.AddSwaggerGen(c =>
             {
@@ -126,7 +122,7 @@ namespace MonitoringProject___API
             app.UseRouting();
 
             //enable using cors
-            app.UseCors("MyPolicy");
+            app.UseCors();
 
             app.UseAuthentication();
 

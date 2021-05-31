@@ -111,7 +111,8 @@ namespace MonitoringProject___API.Controllers
             }
         }
 
-        [HttpPost("forgot-password")]
+        [HttpPost]
+        [Route("forgot-password")]
         public IActionResult ForgotPassword(Forgot forgot)
         {
             var jwt = new JwtService(config);

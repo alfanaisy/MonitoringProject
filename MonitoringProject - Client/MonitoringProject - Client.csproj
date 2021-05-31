@@ -5,4 +5,12 @@
     <RootNamespace>MonitoringProject___Client</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitoringProject - API\MonitoringProject - API.csproj" />
+  </ItemGroup>
+
 </Project>
