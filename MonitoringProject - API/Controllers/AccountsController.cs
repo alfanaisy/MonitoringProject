@@ -121,7 +121,7 @@ namespace MonitoringProject___API.Controllers
             if(isValid != null)
             {
                 var token = jwt.GenerateSecurityToken(forgot.Email);
-                var url = "https://localhost:44380/api/accounts/reset-password?token=" + token;
+                var url = "https://localhost:44343/authentication/ResetPassword?token=" + token;
                 string subject = "Reset Password";
                 emailService.SendEmail(config.GetSection("EmailSettings").GetSection("Mail").Value, subject, forgot.Email, url);
                 return Ok(new { token, Status = "Success", Message = "Email has been sent to your address with further instruction." });
@@ -129,25 +129,33 @@ namespace MonitoringProject___API.Controllers
             return NotFound(new { Status = "Error", Message = "This email does not exist in our database." });
         }
 
-        [HttpPut("reset-password")]
-        [Authorize]
+        [HttpPut]
+        [Route("reset-password")]
         public IActionResult ResetPassword(Reset reset)
         {
-            string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
-            var jwtReader = new JwtSecurityTokenHandler();
-            var jwt = jwtReader.ReadJwtToken(token);
-
-            var email = jwt.Claims.First(c => c.Type == "email").Value;
-            var isExist = context.Accounts.FirstOrDefault(u => u.User.Email == email);
-
-            isExist.Password = BCrypt.Net.BCrypt.HashPassword(reset.Password);
-
-            var result = repository.Put(isExist);
-            if (result > 0)
+            try
             {
-                return Ok(new { Status = "Success", Message = "Password has been reset" });
+                string token = reset.Token;
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var email = jwt.Claims.First(c => c.Type == "email").Value;
+                var isExist = context.Accounts.FirstOrDefault(u => u.User.Email == email);
+
+                isExist.Password = BCrypt.Net.BCrypt.HashPassword(reset.Password);
+
+                var result = repository.Put(isExist);
+                if (result > 0)
+                {
+                    return Ok(new { Status = "Success", Message = "Password has been reset" });
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            
         }
 
         [HttpPut("change-password")]

@@ -47,7 +47,7 @@ namespace MonitoringProject___API
                     builder =>
                     {
                         builder
-                        .WithOrigins("https://www.test-cors.org", "https://localhost:44343")
+                        .WithOrigins("https://localhost:44343")
                         .AllowAnyHeader().WithMethods("POST", "PUT", "GET");
                     });
             });
