@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -70,6 +71,25 @@ namespace MonitoringProject___Client.Controllers
             else
             {
                 return BadRequest(new { result });
+            }
+        }
+
+        public string LoginAPI(Login login)
+        {
+            var client = new HttpClient();
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json");
+            var result = client.PostAsync("https://localhost:44380/api/accounts/login", stringContent).Result;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "2323e");
+            if (result.IsSuccessStatusCode)
+            {
+                //return RedirectToRoute(new { action = "Index", controller = "Home", area="" });
+                //return Ok(new { result });
+                return Url.Action("Index", "Home");
+            }
+            else
+            {
+                return "Error";
+                //return BadRequest(new { result });
             }
         }
     }
