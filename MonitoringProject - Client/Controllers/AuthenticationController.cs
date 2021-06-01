@@ -84,9 +84,11 @@ namespace MonitoringProject___Client.Controllers
 
             HttpContext.Session.SetString("JWToken", token);
 
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             if (result.IsSuccessStatusCode)
             {
-                //return RedirectToRoute(new { action = "Index", controller = "Home", area="" });
+                //return RedirectToRoute(new { action = "Index", controller = "Home", area = "" });
                 //return Ok(new { result });
                 return Url.Action("Index", "Home");
             }

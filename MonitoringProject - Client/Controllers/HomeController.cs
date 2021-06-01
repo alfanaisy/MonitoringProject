@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MonitoringProject___Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,7 +25,12 @@ namespace MonitoringProject___Client.Controllers
         public IActionResult Index()
         {
             var token = HttpContext.Session.GetString("JWToken");
-            ViewData["token"] = token;
+            
+            var jwtReader = new JwtSecurityTokenHandler();
+            var jwt = jwtReader.ReadJwtToken(token);
+
+            var email = jwt.Claims.First(c => c.Type == "unique_name").Value;
+            ViewData["token"] = email;
             return View();
         }
 

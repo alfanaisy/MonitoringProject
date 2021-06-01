@@ -90,8 +90,9 @@
                         text: 'Register has been sent to your address',
                         icon: 'success',
                         timer: 10000
-                    });
-                    window.location.href = data;
+                    }).then(() => {
+                        window.location.href = data;
+                    })
                 },
                 error: (data) => {
                     console.log(data)
