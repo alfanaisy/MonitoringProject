@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -79,7 +80,10 @@ namespace MonitoringProject___Client.Controllers
             var client = new HttpClient();
             StringContent stringContent = new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json");
             var result = client.PostAsync("https://localhost:44380/api/accounts/login", stringContent).Result;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "2323e");
+            var token = result.Content.ReadAsStringAsync().Result;
+
+            HttpContext.Session.SetString("JWToken", token);
+
             if (result.IsSuccessStatusCode)
             {
                 //return RedirectToRoute(new { action = "Index", controller = "Home", area="" });
