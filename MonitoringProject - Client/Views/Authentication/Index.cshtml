@@ -14,7 +14,7 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">Sign in to start your session</p>
 
-            <form id="form-login">
+            <form id="LoginForm">
                 <div class="input-group mb-3">
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                     <div class="input-group-append">
@@ -59,13 +59,33 @@
     <script>
 
         $(document).ready(function () {
-
+            $('#LoginForm').submit(function (e) {
+                e.preventDefault();
+                login();
+            })
         })
 
-        $('#form-login').submit(function () {
+        const login = () => {
+            let User = {
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
 
-        })
-
+            $.ajax({
+                type: "POST",
+                url: "Authentication/LoginAPI",
+                data: User,
+                success: (data) => {
+                    window.location.href = data
+                    console.log(data)
+                    //alert(data)
+                },
+                error: (data) => {
+                    console.log(data)
+                    //alert(data)
+                }
+            });
+        }
     </script>
 
 }

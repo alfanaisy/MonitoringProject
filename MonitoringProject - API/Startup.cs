@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MonitoringProject___API.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace MonitoringProject___API
 {

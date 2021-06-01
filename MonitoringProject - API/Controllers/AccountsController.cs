@@ -100,13 +100,16 @@ namespace MonitoringProject___API.Controllers
                 if (BCrypt.Net.BCrypt.Verify(login.Password, result.Password))
                 {
                     var token = jwt.GenerateSecurityToken(result.Name, result.Email, result.Role);
-                    return Ok(new { token, name = result.Name, role = result.Role });
+                    return Ok(token);
+                    //return token;
                 }
 
+                //return "Unauthorized";
                 return Unauthorized();
             }
             catch (Exception)
             {
+                //return "BadRequest";
                 return BadRequest();
             }
         }
