@@ -92,5 +92,39 @@ namespace MonitoringProject___Client.Controllers
                 //return BadRequest(new { result });
             }
         }
+
+        public string RegisterProjectManagerAPI(Register register)
+        {
+            var client = new HttpClient();
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(register), Encoding.UTF8, "application/json");
+            var result = client.PostAsync("https://localhost:44380/api/accounts/register-manager", stringContent).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return Url.Action("Index", "Authentication");
+                //return Ok(new { result });
+            }
+            else
+            {
+                return "Error";
+                //return BadRequest(new { result });
+            }
+        }
+
+        public string RegisterMemberAPI(Register register)
+        {
+            var client = new HttpClient();
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(register), Encoding.UTF8, "application/json");
+            var result = client.PostAsync("https://localhost:44380/api/accounts/register-member", stringContent).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                //return Ok(new { result });
+                return Url.Action("Index", "Authentication");
+            }
+            else
+            {
+                //return BadRequest(new { result });
+                return "Error";
+            }
+        }
     }
 }
