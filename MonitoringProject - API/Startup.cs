@@ -40,6 +40,19 @@ namespace MonitoringProject___API
             services.AddTokenAuthentication(Configuration);
             services.AddDbContext<MyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyConnection")));
 
+            //cors
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",
+                    builder =>
+                    {
+                        builder
+                        .WithOrigins("https://localhost:44343")
+                        .AllowAnyHeader().WithMethods("POST", "PUT", "GET");
+                    });
+            });
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1.0", new OpenApiInfo
@@ -107,6 +120,9 @@ namespace MonitoringProject___API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            //enable using cors
+            app.UseCors();
 
             app.UseAuthentication();
 
