@@ -100,26 +100,20 @@ namespace MonitoringProject___Client.Controllers
 
                 if (role == "Project Manager")
                 {
-                    //return Url.Action("Index", "ProjectManager");
-                    return new
-                    {
-                        token,
-                        url = Url.Action("Index", "ProjectManager")
-                    };
+                    return Url.Action("Index", "ProjectManager");
+                }
+                else if (role == "Project Member")
+                {
+                    return Url.Action("Index", "Member");
                 }
                 else
                 {
-                    return new
-                    {
-                        token,
-                        url = Url.Action("Index", "Member")
-                    };
+                    return Url.Action("Error", "Home");
                 }
             }
             else
             {
                 return Url.Action("Error", "Home");
-                //return BadRequest(new { result });
             }
         }
 
@@ -137,12 +131,10 @@ namespace MonitoringProject___Client.Controllers
             if (result.IsSuccessStatusCode)
             {
                 return Url.Action("Index", "Authentication");
-                //return Ok(new { result });
             }
             else
             {
-                return "Error";
-                //return BadRequest(new { result });
+                return Url.Action("Error", "Home");
             }
         }
 
@@ -153,13 +145,11 @@ namespace MonitoringProject___Client.Controllers
             var result = client.PostAsync("https://localhost:44380/api/accounts/register-member", stringContent).Result;
             if (result.IsSuccessStatusCode)
             {
-                //return Ok(new { result });
                 return Url.Action("Index", "Authentication");
             }
             else
             {
-                //return BadRequest(new { result });
-                return "Error";
+                return Url.Action("Error", "Home");
             }
         }
     }

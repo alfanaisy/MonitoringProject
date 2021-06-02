@@ -8,7 +8,7 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    @*<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">*@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -25,13 +25,17 @@
     <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+            <img class="animation__shake" src="~/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
 
 
@@ -46,43 +50,43 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item menu-open">
-                            <a asp-area="" asp-controller="Member" asp-action="Index" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <a asp-area="" asp-controller="@ViewData["controller"]" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fa fa-tachometer"></i>
                                 <p>
                                     Dashboard
                                 </p>
                             </a>
                         </li>
                         <li class="nav-item menu-open">
-                            <a asp-area="" asp-controller="@ViewData["role"]" asp-action="Project" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <a asp-area="" asp-controller="@ViewData["controller"]" asp-action="Project" class="nav-link">
+                                <i class="nav-icon fa fa-code"></i>
                                 <p>
                                     Projects
                                 </p>
                             </a>
                         </li>
-                            <li class="nav-item menu-open fixed-bottom">
-                                <a asp-area="" asp-controller="Authentication" asp-action="Logout" class="nav-link">
-                                    <i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>
+                        <li class="nav-item menu-open fixed-bottom p-2">
+                            <a asp-area="" asp-controller="Authentication" asp-action="Logout" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
                                     Logout
-                                    </p>
-                                </a>
-                            </li>
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
         </aside>
 
-                <div class="content-wrapper">
-                    <main role="main" class="content">
-                        <div class="container-fluid">
-                            <div class="p-3">
-                                @RenderBody()
-                            </div>
-                        </div>
-                    </main>
+        <div class="content-wrapper">
+            <main role="main" class="content">
+                <div class="container-fluid">
+                    <div class="p-3">
+                        @RenderBody()
+                    </div>
                 </div>
+            </main>
+        </div>
 
     </div>
     <!-- ./wrapper -->
@@ -120,6 +124,8 @@
     <script src="~/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="~/dist/js/pages/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
     @RenderSection("script_user")
 </body>
 </html>

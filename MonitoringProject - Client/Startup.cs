@@ -34,7 +34,7 @@ namespace MonitoringProject___Client
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(1000);
+                options.IdleTimeout = TimeSpan.FromSeconds(10000);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -63,10 +63,7 @@ namespace MonitoringProject___Client
                     }
                 };
             });
-            //services.AddTokenAuthentication(Configuration);
-
             services.AddControllersWithViews();
-            services.AddTokenAuthentication(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

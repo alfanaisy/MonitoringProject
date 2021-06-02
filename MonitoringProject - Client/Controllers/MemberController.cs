@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-//using System.Web.Http;
 
 namespace MonitoringProject___Client.Controllers
 {
+    [Authorize(Roles = "Project Member")]
     public class MemberController : Controller
     {
         public IActionResult Index()
@@ -21,17 +21,10 @@ namespace MonitoringProject___Client.Controllers
                 var jwt = jwtReader.ReadJwtToken(token);
 
                 var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
-                var role = jwt.Claims.First(c => c.Type == "role").Value;
-                ViewData["role"] = "Member";
-                if (role == "Project Member")
-                {
-                    ViewData["name"] = name;
-                    return View();
-                }
-                else
-                {
-                    return RedirectToAction("Error", "Home");
-                }
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "Member";
+                return View();
             }
             return RedirectToAction("Index", "Authentication");
         }
@@ -45,16 +38,10 @@ namespace MonitoringProject___Client.Controllers
                 var jwt = jwtReader.ReadJwtToken(token);
 
                 var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
-                var role = jwt.Claims.First(c => c.Type == "role").Value;
-                if (role == "Project Member")
-                {
-                    ViewData["name"] = name;
-                    return View();
-                }
-                else
-                {
-                    return RedirectToAction("Error", "Home");
-                }
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "Member";
+                return View();
             }
             return RedirectToAction("Index", "Authentication");
         }

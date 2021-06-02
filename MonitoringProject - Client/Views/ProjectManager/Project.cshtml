@@ -5,8 +5,90 @@
     Layout = "DashboardLayout";
 }
 
-<h1> Project" Manager</h1>
+<h1> Project List Manager @ViewData["name"]</h1>
+
+<div class="p-3">
+    <table id="tbl_project" class="display">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Project Name</th>
+                <th>Start Date</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
 
 @section script_user{
+    <script>
 
+        $(document).ready(function () {
+            
+        })
+
+        //table
+        let table = $('#tbl_project').DataTable({
+            ajax: {
+                url: "GetProjects",
+                dataSrc: ""
+            },
+            columns: [
+                //No
+                {
+                    "render": (data, type, row, meta) => {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                //Project Name
+                { "data": "projectName" },
+                //Start Date
+                {
+                    "data": "startDate",
+                    "render": (startDate) => {
+                        let date = moment(startDate)
+                        return date.format('DD MMMM YYYY');
+                    }
+                },
+                //Deadline
+                {
+                    "data": "endDate",
+                    "render": (endDate) => {
+                        let date = moment(endDate)
+                        return date.format('DD MMMM YYYY');
+                    }
+                },
+                //Status
+                { "data": "status" },
+                //Action
+                {
+                    'data': 'projectID',
+                    "render": function (id) {
+                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Open(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                    }
+                }
+            ]
+        })
+
+        const Open = (id) => {
+            Swal.fire({
+                text: 'Nothing Happened!',
+                icon: 'success',
+                timer: 10000,
+                timerProgressBar: true
+            });
+        }
+
+        const Delete = (id) => {
+            Swal.fire({
+                text: `Project ${id} Has been deleted (jk)`,
+                icon: 'success',
+                timer: 10000,
+                timerProgressBar: true
+            });
+        }
+
+    </script>
 }

@@ -83,11 +83,18 @@
                 type: "POST",
                 url: "RegisterMemberAPI",
                 data: User,
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Please wait...',
+                        showConfirmButton: false,
+                        backdrop: `rgba(0,0,0,0.6)`
+                    })
+                },
                 success: (data) => {
                     console.log(data)
                     //alert(data)
                     Swal.fire({
-                        text: 'Register has been sent to your address',
+                        text: 'Register successful',
                         icon: 'success',
                         timer: 10000
                     }).then(() => {

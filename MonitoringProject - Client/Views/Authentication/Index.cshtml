@@ -75,16 +75,21 @@
                 type: "POST",
                 url: "Authentication/LoginAPI",
                 data: User,
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Please wait...',
+                        showConfirmButton: false,
+                        backdrop: `rgba(0,0,0,0.6)`
+                    })
+                },
                 success: (data) => {
                     console.log(data)
-                    // set request header => data.token
-                    window.location.href = data.url
-                    
-                    //alert(data)
+                    window.location.href = data
                 },
                 error: (data) => {
                     console.log(data)
-                    //alert(data)
+
+                    location.reload()
                 }
             });
         }
