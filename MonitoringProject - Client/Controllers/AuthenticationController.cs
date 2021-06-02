@@ -97,11 +97,11 @@ namespace MonitoringProject___Client.Controllers
                 var role = jwt.Claims.First(c => c.Type == "role").Value;
                 if(role == "Project Manager")
                 {
-                    return Url.Action("GetProjects", "Home");
+                    return Url.Action("Index", "ProjectManager");
                 }
                 else
                 {
-                    return Url.Action("Index", "Home");
+                    return Url.Action("Index", "Member");
                 }
             }
             else
