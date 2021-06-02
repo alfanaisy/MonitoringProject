@@ -9,4 +9,28 @@
     <p>
         @token
     </p>
+
+    <button id="btnGetData">Get Project Data</button>
 </div>
+
+@section scripts{ 
+    <script>
+        $(document).ready(function () {
+            $('#btnGetData').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "Home/GetProjectAPI",
+                    success: (data) => {
+                        window.location.href = data
+                        console.log(data)
+                        //alert(data)
+                    },
+                    error: (data) => {
+                        console.log(data)
+                        //alert(data)
+                    }
+                });
+            })
+        })
+    </script>
+}

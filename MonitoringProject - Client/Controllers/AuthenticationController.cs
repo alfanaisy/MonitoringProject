@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +21,7 @@ namespace MonitoringProject___Client.Controllers
     {
         public IActionResult Index()
         {
+            HttpContext.Session.Remove("JWToken");
             return View();
         }
 
@@ -84,19 +89,32 @@ namespace MonitoringProject___Client.Controllers
 
             HttpContext.Session.SetString("JWToken", token);
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             if (result.IsSuccessStatusCode)
             {
-                //return RedirectToRoute(new { action = "Index", controller = "Home", area = "" });
-                //return Ok(new { result });
-                return Url.Action("Index", "Home");
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var role = jwt.Claims.First(c => c.Type == "role").Value;
+                if(role == "Project Manager")
+                {
+                    return Url.Action("GetProjects", "Home");
+                }
+                else
+                {
+                    return Url.Action("Index", "Home");
+                }
             }
             else
             {
                 return "Error";
                 //return BadRequest(new { result });
             }
+        }
+
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Remove("JWToken");
+            return RedirectToAction("Index", "Authentication");
         }
 
         public string RegisterProjectManagerAPI(Register register)

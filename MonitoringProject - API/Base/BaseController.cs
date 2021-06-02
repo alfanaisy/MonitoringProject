@@ -19,7 +19,6 @@ namespace MonitoringProject___API.Base
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public ActionResult Get()
         {
             try
@@ -35,7 +34,6 @@ namespace MonitoringProject___API.Base
 
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public ActionResult Get(TId id)
         {
             try
