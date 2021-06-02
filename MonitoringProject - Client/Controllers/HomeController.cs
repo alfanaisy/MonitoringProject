@@ -26,8 +26,6 @@ namespace MonitoringProject___Client.Controllers
         public IActionResult Index()
         {
             var token = HttpContext.Session.GetString("JWToken");
-
-
             if (token != null)
             {
                 var jwtReader = new JwtSecurityTokenHandler();

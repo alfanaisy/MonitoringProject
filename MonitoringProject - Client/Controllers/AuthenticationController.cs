@@ -95,6 +95,7 @@ namespace MonitoringProject___Client.Controllers
                 var jwt = jwtReader.ReadJwtToken(token);
 
                 var role = jwt.Claims.First(c => c.Type == "role").Value;
+                
                 if(role == "Project Manager")
                 {
                     return Url.Action("Index", "ProjectManager");
@@ -106,7 +107,7 @@ namespace MonitoringProject___Client.Controllers
             }
             else
             {
-                return "Error";
+                return Url.Action("Error", "Home");
                 //return BadRequest(new { result });
             }
         }
