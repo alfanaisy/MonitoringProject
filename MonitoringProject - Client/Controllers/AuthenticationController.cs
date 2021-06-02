@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.ViewModels;
 using Newtonsoft.Json;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,6 +89,7 @@ namespace MonitoringProject___Client.Controllers
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+
             if (result.IsSuccessStatusCode)
             {
                 //return RedirectToRoute(new { action = "Index", controller = "Home", area = "" });
@@ -97,6 +101,12 @@ namespace MonitoringProject___Client.Controllers
                 return "Error";
                 //return BadRequest(new { result });
             }
+        }
+
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Remove("JWToken");
+            return RedirectToAction("Index", "Authentication");
         }
 
         public string RegisterProjectManagerAPI(Register register)

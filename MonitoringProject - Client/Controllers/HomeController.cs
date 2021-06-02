@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,13 +26,18 @@ namespace MonitoringProject___Client.Controllers
         public IActionResult Index()
         {
             var token = HttpContext.Session.GetString("JWToken");
-            
-            var jwtReader = new JwtSecurityTokenHandler();
-            var jwt = jwtReader.ReadJwtToken(token);
 
-            var email = jwt.Claims.First(c => c.Type == "unique_name").Value;
-            ViewData["token"] = email;
-            return View();
+
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var email = jwt.Claims.First(c => c.Type == "unique_name").Value;
+                ViewData["token"] = email;
+                return View(); 
+            }
+            return Unauthorized();
         }
 
         public IActionResult LoginPage()
