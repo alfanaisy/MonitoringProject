@@ -80,7 +80,7 @@ namespace MonitoringProject___Client.Controllers
             }
         }
 
-        public string LoginAPI(Login login)
+        public object LoginAPI(Login login)
         {
             var client = new HttpClient();
             StringContent stringContent = new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json");
@@ -95,14 +95,25 @@ namespace MonitoringProject___Client.Controllers
                 var jwt = jwtReader.ReadJwtToken(token);
 
                 var role = jwt.Claims.First(c => c.Type == "role").Value;
-                
-                if(role == "Project Manager")
+
+                Response.Cookies.Append("jwt-cookie", token);
+
+                if (role == "Project Manager")
                 {
-                    return Url.Action("Index", "ProjectManager");
+                    //return Url.Action("Index", "ProjectManager");
+                    return new
+                    {
+                        token,
+                        url = Url.Action("Index", "ProjectManager")
+                    };
                 }
                 else
                 {
-                    return Url.Action("Index", "Member");
+                    return new
+                    {
+                        token,
+                        url = Url.Action("Index", "Member")
+                    };
                 }
             }
             else

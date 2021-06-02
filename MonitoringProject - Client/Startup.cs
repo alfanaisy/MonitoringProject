@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MonitoringProject___API.Middleware;
 using MonitoringProject___API.Repositories.Data;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,16 @@ namespace MonitoringProject___Client
                     ValidAudience = "Daniel",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:secret"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt-cookie"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
+            //services.AddTokenAuthentication(Configuration);
 
             services.AddControllersWithViews();
         }
