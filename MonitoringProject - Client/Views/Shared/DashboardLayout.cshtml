@@ -42,19 +42,47 @@
                 <span class="brand-text font-weight-light">@ViewData["name"]</span>
             </a>
 
-
-
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item menu-open">
+                            <a asp-area="" asp-controller="Member" asp-action="Index" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Dashboard
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item menu-open">
+                            <a asp-area="" asp-controller="@ViewData["role"]" asp-action="Project" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Projects
+                                </p>
+                            </a>
+                        </li>
+                            <li class="nav-item menu-open fixed-bottom">
+                                <a asp-area="" asp-controller="Authentication" asp-action="Logout" class="nav-link">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>
+                                    Logout
+                                    </p>
+                                </a>
+                            </li>
+                    </ul>
+                </nav>
+            </div>
         </aside>
 
-        <div class="content-wrapper">
-            <main role="main" class="content">
-                <div class="container-fluid">
-                    <div class="p-3">
-                        @RenderBody()
-                    </div>
+                <div class="content-wrapper">
+                    <main role="main" class="content">
+                        <div class="container-fluid">
+                            <div class="p-3">
+                                @RenderBody()
+                            </div>
+                        </div>
+                    </main>
                 </div>
-            </main>
-        </div>
 
     </div>
     <!-- ./wrapper -->
