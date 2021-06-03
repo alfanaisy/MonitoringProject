@@ -41,6 +41,7 @@ namespace MonitoringProject___Client.Controllers
 
         public IActionResult Project()
         {
+            HttpContext.Session.Remove("projectId");
             var token = HttpContext.Session.GetString("JWToken");
             if (token != null)
             {
@@ -56,10 +57,18 @@ namespace MonitoringProject___Client.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        [HttpGet]
+        public string GoModule(int id)
+        {
+            HttpContext.Session.SetInt32("projectId", id);
+            return Url.Action("Module", "ProjectManager");
+        }
+
         public IActionResult Module()
         {
+            var projectId = HttpContext.Session.GetInt32("projectId");
             var token = HttpContext.Session.GetString("JWToken");
-            if (token != null)
+            if (token != null && projectId != 0)
             {
                 var jwtReader = new JwtSecurityTokenHandler();
                 var jwt = jwtReader.ReadJwtToken(token);
@@ -68,6 +77,7 @@ namespace MonitoringProject___Client.Controllers
 
                 ViewData["name"] = name;
                 ViewData["controller"] = "ProjectManager";
+                ViewData["projectId"] = projectId;
                 return View();
             }
             return RedirectToAction("Index","Authentication");
@@ -108,14 +118,16 @@ namespace MonitoringProject___Client.Controllers
             return null;
         }
 
+        [HttpGet]
         public List<Module> GetModules()
         {
             var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/modules/get-module-by-project/{0}", projectId)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var modules = result.Content.ReadAsStringAsync().Result;

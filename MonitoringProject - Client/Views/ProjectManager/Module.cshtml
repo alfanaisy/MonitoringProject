@@ -5,6 +5,7 @@
     Layout = "DashboardLayout";
 }
 <h1> Module List: @ViewData["name"]</h1>
+<h2> Project Id: @ViewData["projectId"]</h2>
 
 <div>
     <button type="button" class="btn btn-danger" id="btnAddMember" style="margin: auto" data-toggle="modal" data-target="#modalAddMember" data-placement="top" title="Add Project Member" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
@@ -136,17 +137,12 @@
 
         $(document).ready(function () {
 
-            $('#AddProjectForm').submit(function (e) {
-                e.preventDefault()
-                AddProject()
-            })
-
         })
 
         //table
         let table = $('#tbl_project_module').DataTable({
             ajax: {
-                url: "GetModules",
+                url: `GetModules`,
                 dataSrc: ""
             },
             columns: [
@@ -157,7 +153,7 @@
                     }
                 },
                 //Project Name
-                { "data": "projectName" },
+                { "data": "moduleName" },
                 //Start Date
                 {
                     "data": "startDate",
@@ -178,7 +174,7 @@
                 { "data": "status" },
                 //Action
                 {
-                    'data': 'projectID',
+                    'data': 'moduleID',
                     "render": function (id) {
                         return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Open(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
                     }
