@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Task = MonitoringProject___API.Models.Task;
 //using System.Web.Http;
 
 namespace MonitoringProject___Client.Controllers
@@ -29,7 +30,7 @@ namespace MonitoringProject___Client.Controllers
                 var jwt = jwtReader.ReadJwtToken(token);
 
                 var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
-                
+
                 ViewData["name"] = name;
                 ViewData["controller"] = "ProjectManager";
                 ViewData["jwtCookie"] = jwtCookie;
@@ -39,6 +40,40 @@ namespace MonitoringProject___Client.Controllers
         }
 
         public IActionResult Project()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "ProjectManager";
+                return View();
+            }
+            return RedirectToAction("Index", "Authentication");
+        }
+
+        public IActionResult Module()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "ProjectManager";
+                return View();
+            }
+            return RedirectToAction("Index","Authentication");
+        }
+
+        public IActionResult Task()
         {
             var token = HttpContext.Session.GetString("JWToken");
             if (token != null)
@@ -67,6 +102,42 @@ namespace MonitoringProject___Client.Controllers
                 {
                     var projects = result.Content.ReadAsStringAsync().Result;
                     var data = JsonConvert.DeserializeObject<List<Project>>(projects);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        public List<Module> GetModules()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var modules = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<Module>>(modules);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        public List<Task> GetTasks()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var tasks = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<Task>>(tasks);
                     return data;
                 }
             }
