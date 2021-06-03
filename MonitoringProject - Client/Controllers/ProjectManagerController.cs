@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 //using System.Web.Http;
 
@@ -69,6 +71,25 @@ namespace MonitoringProject___Client.Controllers
                 }
             }
             return null;
+        }
+
+        public HttpStatusCode AddProject(Project project)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
+                var result = client.PostAsync("https://localhost:44380/api/projects/create-new-project", stringContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
         }
     }
 }

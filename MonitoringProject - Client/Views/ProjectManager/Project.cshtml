@@ -8,7 +8,7 @@
 <h1> Project List: @ViewData["name"]</h1>
 <div>
     <button type="button" class="btn btn-success" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAdd" data-placement="top" title="New Project" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
-    <button type="button" class="btn btn-danger" id="btnAddMember" style="margin: auto" data-toggle="modal" data-target="#modalAddMember" data-placement="top" title="New Project Member" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-danger" id="btnAddMember" style="margin: auto" data-toggle="modal" data-target="#modalAddMember" data-placement="top" title="Add Project Member" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
     <button type="button" class="btn btn-dark" id="btnAddTask" style="margin: auto" data-toggle="modal" data-target="#modalAddTask" data-placement="top" title="Add Project Task" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
     <button type="button" class="btn btn-warning" id="btnAddModule" style="margin: auto" data-toggle="modal" data-target="#modalAddModule" data-placement="top" title="Add Project Module" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
 </div>
@@ -51,7 +51,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="moduledescription" class="col-form-label"> Project Module Description</label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <textarea class="form-control" rows="3" placeholder="Description"></textarea>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module description.
@@ -226,12 +226,12 @@
             <h2 class="modal-title">New Project</h2>
         </div>
         <!-- Modal body -->
-        <form class="needs-validation" id="formData" novalidate>
+        <form class="needs-validation" id="AddProjectForm" novalidate>
             <div class="modal-body">
                 <div class="form-group">
                     <div class="col-md-12">
                         <label for="name" class="col-form-label"> Project Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+                        <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Name" required>
                     </div>
                     <div class="invalid-feedback">
                         Please input your project name.
@@ -240,7 +240,7 @@
                 <div class="form-group">
                     <div class="col-md-12">
                         <label for="projectdescription" class="col-form-label"> Project Description</label>
-                        <textarea class="form-control" rows="3" required></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Description" id="project_description" name="project_description" required></textarea>
                     </div>
                     <div class="invalid-feedback">
                         Please input your project description.
@@ -249,7 +249,7 @@
                 <div class="form-group">
                     <div class="col-md-12">
                         <label for="startdate" class="col-form-label">Start Date</label>
-                        <input type="date" class="form-control" id="startdate" name="startdate" placeholder="Enter StartDate" required>
+                        <input type="date" class="form-control" id="project_startdate" name="project_startdate" placeholder="Enter StartDate" required>
                     </div>
                     <div class="invalid-feedback">
                         Please input your project startdate.
@@ -258,7 +258,7 @@
                 <div class="form-group">
                     <div class="col-md-12">
                         <label for="deadline" class="col-form-label">Deadline</label>
-                        <input type="date" class="form-control" id="deadline" name="deadline" placeholder="Enter Deadline" required>
+                        <input type="date" class="form-control" id="project_deadline" name="project_deadline" placeholder="Enter Deadline" required>
                     </div>
                     <div class="invalid-feedback">
                         Please input your project deadline.
@@ -268,7 +268,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+                <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
@@ -279,6 +279,11 @@
     <script>
 
         $(document).ready(function () {
+
+            $('#AddProjectForm').submit(function (e) {
+                e.preventDefault()
+                AddProject()
+            })
 
         })
 
@@ -341,6 +346,52 @@
                 timer: 10000,
                 timerProgressBar: true
             });
+        }
+
+        const AddMember = () => {}
+
+        const AddProject = () => {
+            let project = {
+                ProjectName: $('#project_name').val(),
+                Description: $('#project_description').val(),
+                StartDate: $('#project_startdate').val(),
+                EndDate: $('#project_deadline').val(),
+                Status: "In-Progress"
+            }
+            console.log(project)
+            $.ajax({
+                type: "POST",
+                url: "AddProject",
+                data: project,
+                success: (data) => {
+                    $('#modalAdd').modal('hide')
+                    if (data == 200) {
+                        Swal.fire({
+                            text: 'New Project created!',
+                            icon: 'success',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                        table.ajax.reload()
+                    } else {
+                        Swal.fire({
+                            text: 'Error creating project!',
+                            icon: 'error',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                    }
+                },
+                error: (data) => {
+                    $('#modalAdd').modal('hide')
+                    Swal.fire({
+                        text: 'Error creating project!',
+                        icon: 'error',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                }
+            })
         }
 
     </script>
