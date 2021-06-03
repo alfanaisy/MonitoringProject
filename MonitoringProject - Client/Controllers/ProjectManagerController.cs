@@ -19,6 +19,7 @@ namespace MonitoringProject___Client.Controllers
     {
         public IActionResult Index()
         {
+            var jwtCookie = HttpContext.Request.Cookies["jwt-cookie"];
             var token = HttpContext.Session.GetString("JWToken");
             if (token != null)
             {
@@ -29,6 +30,7 @@ namespace MonitoringProject___Client.Controllers
                 
                 ViewData["name"] = name;
                 ViewData["controller"] = "ProjectManager";
+                ViewData["jwtCookie"] = jwtCookie;
                 return View();
             }
             return RedirectToAction("Index", "Authentication");
@@ -58,7 +60,7 @@ namespace MonitoringProject___Client.Controllers
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/projects").Result;
+                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var projects = result.Content.ReadAsStringAsync().Result;

@@ -92,11 +92,21 @@ namespace MonitoringProject___Client.Controllers
             if (result.IsSuccessStatusCode)
             {
                 var jwtReader = new JwtSecurityTokenHandler();
-                var jwt = jwtReader.ReadJwtToken(token);
+                var reader = jwtReader.ReadJwtToken(token);
+                //var exp = reader.Claims.First(c => c.Type == "exp").Value;
+                var claims = reader.Claims.ToList();
 
-                var role = jwt.Claims.First(c => c.Type == "role").Value;
+                var jwtPayload = new JwtPayload(claims);
 
-                Response.Cookies.Append("jwt-cookie", token);
+                var role = jwtPayload.Claims.First(c => c.Type == "role").Value;
+
+                var exp = jwtPayload.ValidTo;
+
+                Response.Cookies.Append("jwt-cookie", token, new CookieOptions
+                {
+                    Expires = exp,
+                    HttpOnly = true
+                });
 
                 if (role == "Project Manager")
                 {
@@ -120,6 +130,7 @@ namespace MonitoringProject___Client.Controllers
         public ActionResult Logout()
         {
             HttpContext.Session.Remove("JWToken");
+            HttpContext.Response.Cookies.Delete("jwt-cookie");
             return RedirectToAction("Index", "Authentication");
         }
 
