@@ -6,6 +6,7 @@ using MonitoringProject___API.Context;
 using MonitoringProject___API.Models;
 using MonitoringProject___API.Repositories.Data;
 using MonitoringProject___API.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -36,15 +37,32 @@ namespace MonitoringProject___API.Controllers
         }
 
         //or use Session instead
-        [HttpGet("get-project-id")]
-        public int GetProjectId(int taskId)
+        //[HttpGet("get-project-id")]
+        //public int GetProjectId(int taskId)
+        //{
+        //    var dbparams = new DynamicParameters();
+        //    dbparams.Add("TaskId", taskId, DbType.Int32);
+
+        //    int projectId = dapper.Get<int>("[dbo].[SP_GetProjectId]", dbparams, commandType: CommandType.StoredProcedure);
+
+        //    return projectId;
+        //}
+
+        [HttpGet("get-task-by-module/{id}")]
+        public List<Task> GetTaskByModule(int id)
         {
-            var dbparams = new DynamicParameters();
-            dbparams.Add("TaskId", taskId, DbType.Int32);
+            try
+            {
+                string query = string.Format("SELECT T.TaskID, T.TaskName, T.Description, T.StartDate, T.EndDate, T.Status, T.Priority FROM TB_M_Task AS T WHERE T.ModuleID={0}", id);
 
-            int projectId = dapper.Get<int>("[dbo].[SP_GetProjectId]", dbparams, commandType: CommandType.StoredProcedure);
+                List<Task> tasks = dapper.GetAllNoParam<Task>(query, CommandType.Text);
 
-            return projectId;
+                return tasks;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

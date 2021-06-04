@@ -107,7 +107,7 @@
                 <h2 class="modal-title">Add Project Member</h2>
             </div>
             <!-- Modal body -->
-            <form class="needs-validation" id="formData" novalidate>
+            <form class="needs-validation" id="AddMemberForm" novalidate>
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-12">
@@ -125,7 +125,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+                    <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -149,7 +149,10 @@
                 theme: 'classic'
             })
 
-            
+            $('#AddMemberForm').submit(function (e) {
+                e.preventDefault()
+                AddMember()
+            })
 
         })
 
@@ -190,19 +193,23 @@
                 {
                     'data': 'moduleID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Open(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnOpen" onclick="Task(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
                     }
                 }
             ]
         })
 
-        const Open = (id) => {
-            Swal.fire({
-                text: 'Nothing Happened!',
-                icon: 'success',
-                timer: 10000,
-                timerProgressBar: true
-            });
+        const Task = (id) => {
+            $.ajax({
+                type: "GET",
+                url: `GoTask/${id}`,
+                success: (data) => {
+                    window.location.href = data
+                },
+                error: (data) => {
+                    alert(data)
+                }
+            })
         }
 
         const Delete = (id) => {
@@ -240,7 +247,45 @@
             })
         }
 
-        const AddMember = () => { }
+        const AddMember = () => {
+            let data = {
+                userID : $('#optionmember').val()
+            }
+
+            //alert(userId)
+            $.ajax({
+                type: "POST",
+                url: "AddMember",
+                data: data,
+                success: (data) => {
+                    $('#modalAddMember').modal('hide')
+                    if (data == 200) {
+                        Swal.fire({
+                            text: 'Member Add to project!',
+                            icon: 'success',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                        table.ajax.reload()
+                    } else {
+                        Swal.fire({
+                            text: `Error adding member! ${data}`,
+                            icon: 'error',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                    }
+                },
+                error: (data) => {
+                    Swal.fire({
+                        text: `Error adding member! ${data}`,
+                        icon: 'error',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                } 
+            })
+        }
 
         const AddModule = () => {
             let project = {
