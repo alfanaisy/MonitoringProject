@@ -50,6 +50,23 @@ namespace MonitoringProject___Client.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        public IActionResult Task()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "Member";
+                return View();
+            }
+            return RedirectToAction("Index", "Authentication");
+        }
+
         public List<Project> GetProjects()
         {
             var token = HttpContext.Session.GetString("JWToken");
