@@ -34,6 +34,7 @@ namespace MonitoringProject___Client
 
             services.AddSession(options =>
             {
+                options.Cookie.Name = "JWT-Session";
                 options.IdleTimeout = TimeSpan.FromSeconds(10000);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;

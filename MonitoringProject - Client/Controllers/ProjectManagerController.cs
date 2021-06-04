@@ -39,6 +39,7 @@ namespace MonitoringProject___Client.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        //PROJECTS START
         public IActionResult Project()
         {
             HttpContext.Session.Remove("projectId");
@@ -56,14 +57,63 @@ namespace MonitoringProject___Client.Controllers
             }
             return RedirectToAction("Index", "Authentication");
         }
-
-        [HttpGet]
-        public string GoModule(int id)
+        public List<Project> GetProjects()
         {
-            HttpContext.Session.SetInt32("projectId", id);
-            return Url.Action("Module", "ProjectManager");
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var projects = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<Project>>(projects);
+                    return data;
+                }
+            }
+            return null;
         }
 
+        public HttpStatusCode AddProject(Project project)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
+                var result = client.PostAsync("https://localhost:44380/api/projects/create-new-project", stringContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+        public HttpStatusCode DeleteProject(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.DeleteAsync(string.Format("https://localhost:44380/api/Projects/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        //PROJECTS END
+
+        //MODULE START
         public IActionResult Module()
         {
             var projectId = HttpContext.Session.GetInt32("projectId");
@@ -81,41 +131,6 @@ namespace MonitoringProject___Client.Controllers
                 return View();
             }
             return RedirectToAction("Index","Authentication");
-        }
-
-        public IActionResult Task()
-        {
-            var token = HttpContext.Session.GetString("JWToken");
-            if (token != null)
-            {
-                var jwtReader = new JwtSecurityTokenHandler();
-                var jwt = jwtReader.ReadJwtToken(token);
-
-                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
-
-                ViewData["name"] = name;
-                ViewData["controller"] = "ProjectManager";
-                return View();
-            }
-            return RedirectToAction("Index", "Authentication");
-        }
-
-        public List<Project> GetProjects()
-        {
-            var token = HttpContext.Session.GetString("JWToken");
-            if (token != null)
-            {
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/projects/get-project-by-user").Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var projects = result.Content.ReadAsStringAsync().Result;
-                    var data = JsonConvert.DeserializeObject<List<Project>>(projects);
-                    return data;
-                }
-            }
-            return null;
         }
 
         [HttpGet]
@@ -138,6 +153,66 @@ namespace MonitoringProject___Client.Controllers
             return null;
         }
 
+        public HttpStatusCode AddModule(Module module)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+
+            module.ProjectID = projectId.Value;
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(module), Encoding.UTF8, "application/json");
+                var result = client.PostAsync("https://localhost:44380/api/modules", stringContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        public HttpStatusCode DeleteModule(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.DeleteAsync(string.Format("https://localhost:44380/api/Modules/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        //MODULE END
+
+        //TASK START
+        public IActionResult Task()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "ProjectManager";
+                return View();
+            }
+            return RedirectToAction("Index", "Authentication");
+        }
+
         public List<Task> GetTasks()
         {
             var token = HttpContext.Session.GetString("JWToken");
@@ -156,23 +231,39 @@ namespace MonitoringProject___Client.Controllers
             return null;
         }
 
-        public HttpStatusCode AddProject(Project project)
+        //TASK END
+
+        //OTHER HANDLER START
+
+        [HttpGet]
+        public string GoModule(int id)
+        {
+            HttpContext.Session.SetInt32("projectId", id);
+            return Url.Action("Module", "ProjectManager");
+        }
+
+        public List<User> GetMembers()
         {
             var token = HttpContext.Session.GetString("JWToken");
-            
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(project), Encoding.UTF8, "application/json");
-                var result = client.PostAsync("https://localhost:44380/api/projects/create-new-project", stringContent).Result;
+                var result = client.GetAsync("https://localhost:44380/api/users/get-members").Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    return HttpStatusCode.OK;
+                    var members = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<User>>(members);
+                    return data;
                 }
-                return HttpStatusCode.BadRequest;
             }
-            return HttpStatusCode.Unauthorized;
+            return null;
         }
+
+        //OTHER HANDLER END
+
+
+
+
     }
 }

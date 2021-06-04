@@ -58,23 +58,6 @@ namespace MonitoringProject___API.Controllers
             return BadRequest(new { Status = "Error", Message = "Create Project failed" });
         }
 
-        [HttpGet("get-members")]
-        [Authorize(Roles = "Project Manager")]
-        public List<User> GetMembers()
-        {
-            string query = "SELECT * FROM [dbo].[TB_M_User] WHERE RoleID=2"; 
-            try
-            {
-                List<User> Members = dapper.GetAllNoParam<User>(query, CommandType.Text);
-
-                return Members;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
         [HttpGet("get-project-by-user")]
         public List<Project> GetProjectByUser()
         {

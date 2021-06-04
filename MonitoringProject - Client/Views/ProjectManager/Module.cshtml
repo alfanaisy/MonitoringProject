@@ -36,12 +36,12 @@
                 <h2 class="modal-title">Add Project Module</h2>
             </div>
             <!-- Modal body -->
-            <form class="needs-validation" id="formData" novalidate>
+            <form class="needs-validation" id="AddModuleForm" novalidate>
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="name" class="col-form-label"> Module Name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+                            <input type="text" class="form-control" id="module_name" name="module_name" placeholder="Enter Name" required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module name.
@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="moduledescription" class="col-form-label"> Project Module Description</label>
-                            <textarea class="form-control" rows="3" placeholder="Description"></textarea>
+                            <textarea class="form-control" rows="3" id="module_description" name="module_description" placeholder="Description"></textarea>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module description.
@@ -59,7 +59,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="startdate" class="col-form-label">Start Date</label>
-                            <input type="date" class="form-control" id="startdate" name="startdate" placeholder="Enter StartDate" required>
+                            <input type="date" class="form-control" id="module_startdate" name="module_startdate" placeholder="Enter StartDate" required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module startdate.
@@ -68,16 +68,16 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="deadline" class="col-form-label">Deadline</label>
-                            <input type="date" class="form-control" id="deadline" name="deadline" placeholder="Enter Deadline" required>
+                            <input type="date" class="form-control" id="module_deadline" name="module_deadline" placeholder="Enter Deadline" required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module deadline.
                         </div>
                     </div>
-                    <div class="form-group">
+                    @*<div class="form-group">
                         <div class="col-md-12">
                             <label for="status" class="col-form-label">Status</label>
-                            <select class="form-control" id="status" name="status" required>
+                            <select class="form-control" id="module_status" name="module_status" required>
                                 <option selected>OnProgress</option>
                                 <option selected>Finished</option>
                                 <option selected>Late</option>
@@ -86,12 +86,12 @@
                         <div class="invalid-feedback">
                             Please input your project module deadline.
                         </div>
-                    </div>
+                    </div>*@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnSave" class="btn btn-primary">Save</button>
+                    <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -112,9 +112,9 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="name" class="col-form-label"> Project Member</label>
-                            <select id="optionmember" name="optionmember" class="form-control" required>
-                                <option selected>daniel</option>
-                                <option selected>alfan</option>
+                            <select id="optionmember" name="optionmember" class="form-control" style="width: 100%" required>
+                                @*<option selected>daniel</option>
+                                <option selected>alfan</option>*@
                             </select>
                         </div>
                         <div class="invalid-feedback">
@@ -136,6 +136,20 @@
     <script>
 
         $(document).ready(function () {
+
+            Members()
+
+            $('#AddModuleForm').submit(function (e) {
+                e.preventDefault()
+                AddModule()
+            })
+
+            $('#optionmember').select2({
+                width: 'resolve',
+                theme: 'classic'
+            })
+
+            
 
         })
 
@@ -193,33 +207,59 @@
 
         const Delete = (id) => {
             Swal.fire({
-                text: `Project ${id} Has been deleted (jk)`,
-                icon: 'success',
-                timer: 10000,
-                timerProgressBar: true
-            });
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `DeleteModule/${id}`,
+                        success: () => {
+                            Swal.fire(
+                                'Deleted!',
+                                'Module has been deleted.',
+                                'success'
+                            )
+                            table.ajax.reload()
+                        },
+                        error: () => {
+                            Swal.fire(
+                                'Failed!',
+                                'Error deleting module.',
+                                'error'
+                            )
+                        }
+                    })
+
+                }
+            })
         }
 
         const AddMember = () => { }
 
-        const AddProject = () => {
+        const AddModule = () => {
             let project = {
-                ProjectName: $('#project_name').val(),
-                Description: $('#project_description').val(),
-                StartDate: $('#project_startdate').val(),
-                EndDate: $('#project_deadline').val(),
+                ModuleName: $('#module_name').val(),
+                Description: $('#module_description').val(),
+                StartDate: $('#module_startdate').val(),
+                EndDate: $('#module_deadline').val(),
                 Status: "In-Progress"
             }
             console.log(project)
             $.ajax({
                 type: "POST",
-                url: "AddProject",
+                url: "AddModule",
                 data: project,
                 success: (data) => {
-                    $('#modalAdd').modal('hide')
+                    $('#modalAddModule').modal('hide')
                     if (data == 200) {
                         Swal.fire({
-                            text: 'New Project created!',
+                            text: 'New Project Module created!',
                             icon: 'success',
                             timer: 10000,
                             timerProgressBar: true
@@ -227,7 +267,7 @@
                         table.ajax.reload()
                     } else {
                         Swal.fire({
-                            text: 'Error creating project!',
+                            text: 'Error creating project module!',
                             icon: 'error',
                             timer: 10000,
                             timerProgressBar: true
@@ -237,11 +277,29 @@
                 error: (data) => {
                     $('#modalAdd').modal('hide')
                     Swal.fire({
-                        text: 'Error creating project!',
+                        text: 'Error creating project module!',
                         icon: 'error',
                         timer: 10000,
                         timerProgressBar: true
                     });
+                }
+            })
+        }
+
+        const Members = () => {
+            $.ajax({
+                type: "GET",
+                url: "GetMembers",
+                success: (data) => {
+                    
+                    console.log(data)
+                    $('#optionmember').empty()
+                    for (let i = 0; i < data.length; i++) {
+                        let id = data[i].userID
+                        let name = data[i].name
+
+                        $("#optionmember").append("<option value='" + id + "'>" + name + "</option>")
+                    }
                 }
             })
         }
