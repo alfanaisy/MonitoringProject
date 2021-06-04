@@ -118,7 +118,7 @@
                 {
                     'data': 'projectID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Open(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Task(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
                     }
                 }
             ]
@@ -140,6 +140,20 @@
                 timer: 10000,
                 timerProgressBar: true
             });
+        }
+
+        const Task = (id) => {
+            //alert(projectId)
+            $.ajax({
+                type: "GET",
+                url: `GoTask/${id}`,
+                success: (data) => {
+                    window.location.href = data
+                },
+                error: (data) => {
+                    alert(data)
+                }
+            })
         }
 
     </script>
