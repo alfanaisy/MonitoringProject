@@ -50,9 +50,17 @@ namespace MonitoringProject___Client.Controllers
             return RedirectToAction("Index", "Authentication");
         }
 
+        [HttpGet]
+        public string GoTask(int id)
+        {
+            HttpContext.Session.SetInt32("projectId", id);
+            return Url.Action("Task", "Member");
+        }
+
         public IActionResult Task()
         {
             var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
             if (token != null)
             {
                 var jwtReader = new JwtSecurityTokenHandler();
@@ -62,6 +70,7 @@ namespace MonitoringProject___Client.Controllers
 
                 ViewData["name"] = name;
                 ViewData["controller"] = "Member";
+                ViewData["projectId"] = projectId;
                 return View();
             }
             return RedirectToAction("Index", "Authentication");
