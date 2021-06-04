@@ -129,7 +129,7 @@ namespace MonitoringProject___Client.Controllers
 
         public ActionResult Logout()
         {
-            HttpContext.Session.Remove("JWToken");
+            HttpContext.Session.Clear();
             HttpContext.Response.Cookies.Delete("jwt-cookie");
             return RedirectToAction("Index", "Authentication");
         }
