@@ -138,15 +138,6 @@
             ]
         })
 
-        const Open = (id) => {
-            Swal.fire({
-                text: 'Nothing Happened!',
-                icon: 'success',
-                timer: 10000,
-                timerProgressBar: true
-            });
-        }
-
         const Delete = (id) => {
             Swal.fire({
                 title: 'Are you sure?',
@@ -158,11 +149,26 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
+                    $.ajax({
+                        type: "DELETE",
+                        url: `DeleteProject/${id}`,
+                        success: () => {
+                            Swal.fire(
+                                'Deleted!',
+                                'Project has been deleted.',
+                                'success'
+                            )
+                            table.ajax.reload()
+                        },
+                        error: () => {
+                            Swal.fire(
+                                'Failed!',
+                                'Error deleting project.',
+                                'error'
+                            )
+                        }
+                    })
+                    
                 }
             })
         }
