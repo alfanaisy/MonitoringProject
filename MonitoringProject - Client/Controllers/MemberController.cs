@@ -9,7 +9,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace MonitoringProject___Client.Controllers
 {
@@ -92,10 +91,11 @@ namespace MonitoringProject___Client.Controllers
             }
             return RedirectToAction("Index", "Authentication");
         }
-
+        
         public List<Project> GetProjects()
         {
             var token = HttpContext.Session.GetString("JWToken");
+            
             if (token != null)
             {
                 var client = new HttpClient();
@@ -105,6 +105,26 @@ namespace MonitoringProject___Client.Controllers
                 {
                     var projects = result.Content.ReadAsStringAsync().Result;
                     var data = JsonConvert.DeserializeObject<List<Project>>(projects);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        public List<Task> GetTasks()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/tasks/get-assigned-task/{0}", projectId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var tasks = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<Task>>(tasks);
                     return data;
                 }
             }

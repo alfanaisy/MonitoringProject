@@ -6,18 +6,16 @@
 }
 <h1> Task List: @ViewData["name"]</h1>
 <h1> Project Id : @ViewData["projectId"]</h1>
-<div>
-    <button class="btn btn-primary" id="taskdone" onclick="">TaskDone</button>
-</div>
 <div class="p-3">
-<table id="tbl_project" class="display">
+<table id="tbl_project_task" class="display">
     <thead>
         <tr>
             <th>No</th>
-            <th>Project Name</th>
+            <th>Task Name</th>
             <th>Start Date</th>
             <th>Deadline</th>
             <th>Status</th>
+            <th>Priority</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -31,9 +29,9 @@
         })
 
         //table
-        let table = $('#tbl_project').DataTable({
+        let table = $('#tbl_project_task').DataTable({
             ajax: {
-                url: "GetProjects",
+                url: "GetTasks",
                 dataSrc: ""
             },
             columns: [
@@ -44,7 +42,7 @@
                     }
                 },
                 //Project Name
-                { "data": "projectName" },
+                { "data": "taskName" },
                 //Start Date
                 {
                     "data": "startDate",
@@ -63,17 +61,19 @@
                 },
                 //Status
                 { "data": "status" },
+                //Priority
+                { "data": "priority" },
                 //Action
                 {
-                    'data': 'projectID',
+                    'data': 'taskID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Open(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<a class="popup btn btn-success" data-toggle="tooltip" data-placement="top" title="Mark Task Done" id="btnEdit" onclick="Done(${id})"><i class= "fa fa-check"></i></a>`;
                     }
                 }
             ]
         })
 
-        const Open = (id) => {
+        const Done = (id) => {
             Swal.fire({
                 text: 'Nothing Happened!',
                 icon: 'success',

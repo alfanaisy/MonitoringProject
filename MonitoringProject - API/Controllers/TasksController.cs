@@ -9,12 +9,14 @@ using MonitoringProject___API.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace MonitoringProject___API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Project Manager")]
+    [Authorize]
     public class TasksController : BaseController<Task, TaskRepository, int>
     {
         private readonly MyContext context;
@@ -56,6 +58,32 @@ namespace MonitoringProject___API.Controllers
                 string query = string.Format("SELECT T.TaskID, T.TaskName, T.Description, T.StartDate, T.EndDate, T.Status, T.Priority FROM TB_M_Task AS T WHERE T.ModuleID={0}", id);
 
                 List<Task> tasks = dapper.GetAllNoParam<Task>(query, CommandType.Text);
+
+                return tasks;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [HttpGet("get-assigned-task/{id}")]
+        public List<Task> GetAssignedTask(int id)
+        {
+            try
+            {
+                string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var email = jwt.Claims.First(c => c.Type == "email").Value;
+                var user = context.Users.FirstOrDefault(u => u.Email == email);
+
+                var dbparams = new DynamicParameters();
+                dbparams.Add("projectId", id, DbType.Int32);
+                dbparams.Add("userId", user.UserID, DbType.Int32);
+
+                List<Task> tasks = dapper.GetAll<Task>("SP_GetAssignedTask", dbparams, CommandType.StoredProcedure);
 
                 return tasks;
             }
