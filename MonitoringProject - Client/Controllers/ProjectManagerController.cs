@@ -376,6 +376,39 @@ namespace MonitoringProject___Client.Controllers
         //OTHER HANDLER END
 
 
+        //CHART START
+
+        public List<object> GetPlanChartData()
+        {
+            var modules = GetModules();
+            List<object> data = new List<object>();
+            for (int i = 0; i < modules.Count; i++)
+            {
+                data.Add(new
+                {
+                    x = modules[i].ModuleName,
+                    y = new dynamic[]
+                        {
+                            //modules[i].StartDate.ToString("yyyy-MM-dd"),
+                            //modules[i].EndDate.ToString("yyyy-MM-dd")
+                            MilliTimeStamp(modules[i].StartDate),
+                            MilliTimeStamp(modules[i].EndDate)
+                        }
+                });
+            }
+            return data;
+        }
+
+        //CHART END
+
+        public double MilliTimeStamp(DateTime TheDate)
+        {
+            DateTime d1 = new DateTime(1970, 1, 1);
+            DateTime d2 = TheDate.ToUniversalTime();
+            TimeSpan ts = new TimeSpan(d2.Ticks - d1.Ticks);
+
+            return ts.TotalMilliseconds;
+        }
 
 
     }

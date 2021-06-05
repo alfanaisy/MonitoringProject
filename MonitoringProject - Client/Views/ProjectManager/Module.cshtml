@@ -27,6 +27,8 @@
     </table>
 </div>
 
+<div id="PlanChart"></div>
+
 @*modal Add Module*@
 <div class="modal" id="modalAddModule">
     <div class="modal-dialog">
@@ -133,6 +135,7 @@
 </div>
 
 @section script_user{
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
 
         $(document).ready(function () {
@@ -153,6 +156,66 @@
                 e.preventDefault()
                 AddMember()
             })
+
+            //
+
+            CreatePlanData()
+
+            //
+
+            var options = {
+                chart: {
+                    height: 350,
+                    type: 'rangeBar',
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                series: [
+                    
+                ],
+                title: {
+                    text: 'Project Plan Timeline',
+                },
+                noData: {
+                    text: 'Loading...'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        distributed: true,
+                        dataLabels: {
+                            hideOverflowingLabels: false
+                        }
+                    }
+                },
+                xaxis: {
+                    type: 'datetime'
+                },
+                yaxis: {
+                    show: false
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f4f5', '#fff'],
+                        opacity: 1
+                    }
+                }
+            }
+
+            var chart = new ApexCharts(
+                document.querySelector("#PlanChart"),
+                options
+            );
+
+            chart.render();
+
+            $.getJSON('GetPlanChartData', function (response) {
+                chart.updateSeries([{
+                    name: 'Plan Data',
+                    data: response
+                }])
+            });
 
         })
 
@@ -336,8 +399,6 @@
                 type: "GET",
                 url: "GetMembers",
                 success: (data) => {
-                    
-                    console.log(data)
                     $('#optionmember').empty()
                     for (let i = 0; i < data.length; i++) {
                         let id = data[i].userID
@@ -345,6 +406,21 @@
 
                         $("#optionmember").append("<option value='" + id + "'>" + name + "</option>")
                     }
+                }
+            })
+        }
+
+        
+
+        const CreatePlanData = () => {
+            $.ajax({
+                type: "GET",
+                url: "GetPlanChartData",
+                success: (data) => {
+                    console.log(data)
+                },
+                error: (data) => {
+                    console.log(data)
                 }
             })
         }
