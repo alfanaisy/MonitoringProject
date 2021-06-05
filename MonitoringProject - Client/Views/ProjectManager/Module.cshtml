@@ -59,7 +59,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="startdate" class="col-form-label">Start Date</label>
-                            <input type="date" class="form-control" id="module_startdate" name="module_startdate" placeholder="Enter StartDate" required>
+                            <input type="date" class="form-control" id="module_startdate" name="module_startdate" placeholder="Enter StartDate"  required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your project module startdate.
@@ -138,6 +138,7 @@
         $(document).ready(function () {
 
             Members()
+            Projects()
 
             $('#AddModuleForm').submit(function (e) {
                 e.preventDefault()
@@ -349,5 +350,23 @@
             })
         }
 
+        const Projects = () => {
+            $.ajax({
+                type: "GET",
+                url: "GetProjectById",
+                success: (data) => {
+
+                    console.log(data)
+                    
+                    let startdate = moment(data.startDate).format('YYYY-MM-DD');
+                    let enddate = moment(data.endDate).format('YYYY-MM-DD')
+                    $("#module_startdate").attr("min", startdate)
+                    $("#module_deadline").attr("min", startdate)
+                    $("#module_startdate").attr("max", enddate)
+                    $("#module_deadline").attr("max", enddate)
+                    //alert(data.startDate + "<->" + data.endDate)
+                }
+            })
+        }
     </script>
 }
