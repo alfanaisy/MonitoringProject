@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace MonitoringProject___Client.Controllers
 {
@@ -129,6 +131,57 @@ namespace MonitoringProject___Client.Controllers
                 }
             }
             return null;
+        }
+
+        public HttpStatusCode FinishTask(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/tasks/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var tasks = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Task>(tasks);
+
+                    data.Status = "Finished";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/tasks", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+        public HttpStatusCode AddReport(Report report)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(report), Encoding.UTF8, "application/json");
+                var result = client.PostAsync(string.Format("https://localhost:44380/api/Reports/create-report/{0}", projectId), stringContent).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return HttpStatusCode.OK;
+                }
+                return HttpStatusCode.BadRequest;
+            }
+            return HttpStatusCode.Unauthorized;
         }
     }
 }

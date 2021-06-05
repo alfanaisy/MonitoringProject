@@ -27,9 +27,9 @@ namespace MonitoringProject___API.Controllers
             this.dapper = dapper;
         }
 
-        [HttpPost("create-report")]
+        [HttpPost("create-report/{id}")]
         [Authorize(Roles = "Project Member")]
-        public IActionResult CreateReport(Report report, int projectId)
+        public IActionResult CreateReport(Report report, int id)
         {
             var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var jwtReader = new JwtSecurityTokenHandler();
@@ -44,7 +44,7 @@ namespace MonitoringProject___API.Controllers
                 dbparams.Add("Content", report.Content, DbType.String);
                 dbparams.Add("ReportDate", report.ReportDate, DbType.DateTime);
                 dbparams.Add("TaskId", report.TaskID, DbType.Int32);
-                dbparams.Add("ProjectId", projectId, DbType.Int32);
+                dbparams.Add("ProjectId", id, DbType.Int32);
                 dbparams.Add("UserId", isExist.UserID, DbType.Int32);
 
                 var result = System.Threading.Tasks.Task.FromResult(dapper.Insert<int>("[dbo].[SP_SubmitReport]", dbparams, commandType: CommandType.StoredProcedure));

@@ -4,8 +4,9 @@
 @{
     Layout = "DashboardLayout";
 }
+   <h1> Task List: @ViewData["name"]</h1>
+    <a asp-controller="ProjectManager" asp-action="Module" class="btn btn-lg btn-primary float-right rounded-circle" data-placement="top" title="Back to Module"><i class="fa fa-arrow-left"></i></a>
 
-<h1> Task List: @ViewData["name"]</h1>
 <h2> Project Id: @ViewData["projectId"]</h2>
 <h2> Module Id: @ViewData["moduleId"]</h2>
 <div>
