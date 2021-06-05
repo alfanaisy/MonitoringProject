@@ -375,6 +375,45 @@ namespace MonitoringProject___Client.Controllers
 
         //OTHER HANDLER END
 
+        public Project GetProjectById()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/Projects/{0}", projectId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var projects = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Project>(projects);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        public Module GetModuleById()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var moduleId = HttpContext.Session.GetInt32("moduleId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/Modules/{0}", moduleId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var modules = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Module>(modules);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+
 
         //CHART START
 
