@@ -90,7 +90,7 @@ namespace MonitoringProject___API.Controllers
                 var dbparams = new DynamicParameters();
                 dbparams.Add("projectId", id, DbType.Int32);
 
-                List<ReportVM> reports = dapper.GetAll<ReportVM>("SP_GetReports", dbparams, CommandType.StoredProcedure);
+                List<dynamic> reports = dapper.GetAll<dynamic>("SP_GetReports", dbparams, CommandType.StoredProcedure);
 
                 return Ok(reports);
             }

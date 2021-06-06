@@ -5,7 +5,7 @@
     Layout = "DashboardLayout";
 }
 
-<h1> Project List: @ViewData["name"]</h1>
+<h1> Project List</h1>
 <div>
     <button type="button" class="btn btn-success" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAdd" data-placement="top" title="New Project" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
 </div>
@@ -132,11 +132,36 @@
                 {
                     'data': 'projectID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Module(${id})"><i class= "fa fa-folder-open-o"></i></a> |<a class="popup btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open Report Project" id="btnReport" onclick="Report(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<button class="popup btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Module(${id})"><i class= "fa fa-folder-open-o"></i></button> |<button class="popup btn btn-success" data-toggle="tooltip" data-placement="top" title="Open Report Project" id="btnReport" onclick="Report(${id})"><i class= "fa fa-sticky-note"></i></button> | <button class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></button> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Mark Project Late" id="btnLate" onclick="Late(${id})"><i class= "fa fa-flag"></i></button>`;
                     }
                 }
             ]
         })
+
+        const Late = (id) => {
+            $.ajax({
+                type: "POST",
+                url: `MarkProjectLate/${id}`,
+                success: (data) => {
+                    Swal.fire({
+                        text: `Project status changed to "Late"`,
+                        icon: 'success',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                    table.ajax.reload()
+                },
+                error: (data) => {
+                    Swal.fire({
+                        text: `Error running task`,
+                        icon: 'error',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                    table.ajax.reload()
+                }
+            })
+        }
 
         const Delete = (id) => {
             Swal.fire({

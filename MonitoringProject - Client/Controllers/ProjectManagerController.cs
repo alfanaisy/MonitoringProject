@@ -278,6 +278,7 @@ namespace MonitoringProject___Client.Controllers
             return HttpStatusCode.Unauthorized;
         }
 
+
         //TASK END
 
         //OTHER HANDLER START
@@ -525,19 +526,34 @@ namespace MonitoringProject___Client.Controllers
         }
 
         [HttpGet]
-        public List<ReportVM> GetReports()
+        public List<object> GetReports()
         {
             var token = HttpContext.Session.GetString("JWToken");
             var projectId = HttpContext.Session.GetInt32("projectId");
             if (token != null)
             {
+                var data = new List<object>();
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var result = client.GetAsync(string.Format("https://localhost:44380/api/Reports/get-report-by-project/{0}", projectId)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var reports = result.Content.ReadAsStringAsync().Result;
-                    var data = JsonConvert.DeserializeObject<List<ReportVM>>(reports);
+                    var rep = JsonConvert.DeserializeObject<List<dynamic>>(reports);
+
+                    for(int i = 0; i < rep.Count; i++)
+                    {
+                        data.Add(new
+                        {
+                            reportID = rep[i].ReportID.Value,
+                            title = rep[i].Title.Value,
+                            content = rep[i].Content.Value,
+                            ReportDate = rep[i].ReportDate.Value,
+                            taskName = rep[i].TaskName.Value,
+                            name = rep[i].Name.Value
+                        });
+                    }
+
                     return data;
                 }
             }
@@ -580,5 +596,175 @@ namespace MonitoringProject___Client.Controllers
                 return BadRequest(new { result });
             }
         }
+
+        public HttpStatusCode MarkProjectFinished()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/projects/{0}", projectId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var project = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Project>(project);
+
+                    data.Status = "Finished";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/projects", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        public HttpStatusCode MarkProjectLate(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/projects/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var project = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Project>(project);
+
+                    data.Status = "Late";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/projects", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        public HttpStatusCode MarkModuleFinished()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var moduleId = HttpContext.Session.GetInt32("moduleId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/modules/{0}", moduleId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var module = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Module>(module);
+
+                    data.Status = "Finished";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/modules", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        public HttpStatusCode MarkModuleLate(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/modules/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var module = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Module>(module);
+
+                    data.Status = "Late";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/modules", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+
+        public HttpStatusCode MarkTaskLate(int id)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/tasks/{0}", id)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var tasks = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<Task>(tasks);
+
+                    data.Status = "Late";
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+                    var updateStatus = client.PutAsync("https://localhost:44380/api/tasks", content).Result;
+
+                    if (updateStatus.IsSuccessStatusCode)
+                    {
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.BadRequest;
+                    }
+                }
+            }
+            return HttpStatusCode.Unauthorized;
+        }
+        
+
+
+        
+
     }
 }
