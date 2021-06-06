@@ -6,7 +6,7 @@
 }
 <h1> Profile Page: @ViewData["name"]</h1>
 <div>
-    <button type="button" class="btn btn-success" id="btnChangePassword" style="margin: auto" data-toggle="modal" data-target="#modalChangePassword" data-placement="top" title="Change Password" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-success" id="btnChangePassword" style="margin: auto" data-toggle="modal" data-target="#modalChangePassword" data-placement="top" title="Change Password" onclick="">Change Password</button>
 </div>
 
 @*modal addreport*@
@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="password_lama" class="col-form-label">Old Password</label>
-                            <input type="text" class="form-control" id="password_lama" name="password_lama" placeholder="Enter Old Password" required>
+                            <input type="password" class="form-control" id="password_lama" name="password_lama" placeholder="Enter Old Password" required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your old password.
@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="password_baru" class="col-form-label">New Password</label>
-                            <input type="text" class="form-control" id="password_baru" name="password_baru" placeholder="Enter New Password" required>
+                            <input type="password" class="form-control" id="password_baru" name="password_baru" placeholder="Enter New Password" required>
                         </div>
                         <div class="invalid-feedback">
                             Please input your new password.
@@ -51,5 +51,49 @@
     </div>
 </div>
 @section script_user{
+    <script>
+        $(document).ready(function () {
+            $('#ChangePasswordForm').submit(function (e) {
+                e.preventDefault();
+                change();
+            })
+        })
 
+        const change = () => {
+            let data_change = {
+                oldPassword: $("#password_lama").val(),
+                newPassword: $("#password_baru").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "ChangePasswordAPI",
+                data: data_change,
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Please wait...',
+                        showConfirmButton: false,
+                        backdrop: `rgba(0,0,0,0.6)`
+                    })
+                },
+                success: (data) => {
+                    console.log(data)
+                    //alert(data)
+                    Swal.fire({
+                        text: 'Password has been change',
+                        icon: 'success',
+                        //confirmButtonText: 'Go to Login Page'
+
+                    }).then((data) => {
+                        // Reload the Page
+                        location.reload();
+                    });
+                },
+                error: (data) => {
+                    console.log(data)
+                    //alert(data)
+                }
+            });
+        }
+    </script>
 }
