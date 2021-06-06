@@ -5,13 +5,11 @@
     Layout = "DashboardLayout";
 }
 <div>
-    <h1> Task List: @ViewData["name"]</h1>
-
+    <h1> Task List</h1>
 </div>
-<h1> Project Id : @ViewData["projectId"]</h1>
 
 <div>
-    <button type="button" class="btn btn-success" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAddReport" data-placement="top" title="Add Project Report" onclick=""><i class="fa fa-sticky-note" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-primary" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAddReport" data-placement="top" title="Add Project Report" onclick=""><i class="fa fa-sticky-note" aria-hidden="true"></i></button>
 </div>
 <div class="p-3">
 <table id="tbl_project_task" class="display">

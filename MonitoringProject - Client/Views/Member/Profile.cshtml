@@ -92,6 +92,15 @@
                 error: (data) => {
                     console.log(data)
                     //alert(data)
+                    Swal.fire({
+                        text: 'Error changing password',
+                        icon: 'error',
+                        //confirmButtonText: 'Go to Login Page'
+
+                    }).then(() => {
+                        // Reload the Page
+                        location.reload();
+                    });
                 }
             });
         }

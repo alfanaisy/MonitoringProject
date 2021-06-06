@@ -70,29 +70,11 @@
                 {
                     'data': 'projectID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Task(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<a class="popup btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Task(${id})"><i class= "fa fa-folder-open-o"></i></a>`;
                     }
                 }
             ]
         })
-
-        const Open = (id) => {
-            Swal.fire({
-                text: 'Nothing Happened!',
-                icon: 'success',
-                timer: 10000,
-                timerProgressBar: true
-            });
-        }
-
-        const Delete = (id) => {
-            Swal.fire({
-                text: `Project ${id} Has been deleted (jk)`,
-                icon: 'success',
-                timer: 10000,
-                timerProgressBar: true
-            });
-        }
 
         const Task = (id) => {
             //alert(projectId)
