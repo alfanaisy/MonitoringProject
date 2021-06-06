@@ -496,6 +496,73 @@ namespace MonitoringProject___Client.Controllers
             return ts.TotalMilliseconds;
         }
 
+        [HttpGet]
+        public string GoReport(int id)
+        {
+            HttpContext.Session.SetInt32("projectId", id);
+            return Url.Action("Report", "ProjectManager");
+        }
 
+        public IActionResult Report()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+            if (token != null && projectId != 0)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "ProjectManager";
+                ViewData["projectId"] = projectId;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Authentication");
+            }
+        }
+
+        [HttpGet]
+        public List<dynamic> GetReports()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
+            if (token != null)
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/reports/get-report-by-project/{0}", projectId)).Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var reports = result.Content.ReadAsStringAsync().Result;
+                    var data = JsonConvert.DeserializeObject<List<dynamic>>(reports);
+                    return data;
+                }
+            }
+            return null;
+        }
+
+        public IActionResult Profile()
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (token != null)
+            {
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
+
+                var name = jwt.Claims.First(c => c.Type == "unique_name").Value;
+
+                ViewData["name"] = name;
+                ViewData["controller"] = "ProjectManager";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Authentication");
+            }
+        }
     }
 }
