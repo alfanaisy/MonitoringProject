@@ -63,6 +63,11 @@ namespace MonitoringProject___Client
                         return Task.CompletedTask;
                     }
                 };
+                options.Events.OnForbidden = context =>
+                {
+                    context.Response.Redirect("Authentication/Forbidden");
+                    return Task.CompletedTask;
+                };
             });
             services.AddControllersWithViews();
         }

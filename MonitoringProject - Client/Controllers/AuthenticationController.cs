@@ -25,6 +25,11 @@ namespace MonitoringProject___Client.Controllers
             return View();
         }
 
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+
         public IActionResult ForgotPassword()
         {
             return View();
@@ -118,12 +123,12 @@ namespace MonitoringProject___Client.Controllers
                 }
                 else
                 {
-                    return Url.Action("Error", "Home");
+                    return Url.Action("Index", "Authentication");
                 }
             }
             else
             {
-                return Url.Action("Error", "Home");
+                return Url.Action("Index", "Authentication");
             }
         }
 
