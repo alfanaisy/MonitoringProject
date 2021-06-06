@@ -80,7 +80,7 @@ namespace MonitoringProject___Client.Controllers
             }
         }
 
-        public string LoginAPI(Login login)
+        public object LoginAPI(Login login)
         {
             var client = new HttpClient();
             StringContent stringContent = new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json");
@@ -92,28 +92,45 @@ namespace MonitoringProject___Client.Controllers
             if (result.IsSuccessStatusCode)
             {
                 var jwtReader = new JwtSecurityTokenHandler();
-                var jwt = jwtReader.ReadJwtToken(token);
+                var reader = jwtReader.ReadJwtToken(token);
+                //var exp = reader.Claims.First(c => c.Type == "exp").Value;
+                var claims = reader.Claims.ToList();
 
-                var role = jwt.Claims.First(c => c.Type == "role").Value;
-                if(role == "Project Manager")
+                var jwtPayload = new JwtPayload(claims);
+
+                var role = jwtPayload.Claims.First(c => c.Type == "role").Value;
+
+                var exp = jwtPayload.ValidTo;
+
+                Response.Cookies.Append("jwt-cookie", token, new CookieOptions
                 {
-                    return Url.Action("GetProjects", "Home");
+                    Expires = exp,
+                    HttpOnly = true
+                });
+
+                if (role == "Project Manager")
+                {
+                    return Url.Action("Index", "ProjectManager");
+                }
+                else if (role == "Project Member")
+                {
+                    return Url.Action("Index", "Member");
                 }
                 else
                 {
-                    return Url.Action("Index", "Home");
+                    return Url.Action("Error", "Home");
                 }
             }
             else
             {
-                return "Error";
-                //return BadRequest(new { result });
+                return Url.Action("Error", "Home");
             }
         }
 
         public ActionResult Logout()
         {
-            HttpContext.Session.Remove("JWToken");
+            HttpContext.Session.Clear();
+            HttpContext.Response.Cookies.Delete("jwt-cookie");
             return RedirectToAction("Index", "Authentication");
         }
 
@@ -125,12 +142,10 @@ namespace MonitoringProject___Client.Controllers
             if (result.IsSuccessStatusCode)
             {
                 return Url.Action("Index", "Authentication");
-                //return Ok(new { result });
             }
             else
             {
-                return "Error";
-                //return BadRequest(new { result });
+                return Url.Action("Error", "Home");
             }
         }
 
@@ -141,13 +156,11 @@ namespace MonitoringProject___Client.Controllers
             var result = client.PostAsync("https://localhost:44380/api/accounts/register-member", stringContent).Result;
             if (result.IsSuccessStatusCode)
             {
-                //return Ok(new { result });
                 return Url.Action("Index", "Authentication");
             }
             else
             {
-                //return BadRequest(new { result });
-                return "Error";
+                return Url.Action("Error", "Home");
             }
         }
     }

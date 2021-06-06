@@ -1,0 +1,99 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "DashboardLayout";
+}
+<h1> Profile Page: @ViewData["name"]</h1>
+<div>
+    <button type="button" class="btn btn-success" id="btnChangePassword" style="margin: auto" data-toggle="modal" data-target="#modalChangePassword" data-placement="top" title="Change Password" onclick="">Change Password</button>
+</div>
+
+@*modal addreport*@
+<div class="modal" id="modalChangePassword">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 class="modal-title">Change Password</h2>
+            </div>
+            <!-- Modal body -->
+            <form class="needs-validation" id="ChangePasswordForm" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="password_lama" class="col-form-label">Old Password</label>
+                            <input type="password" class="form-control" id="password_lama" name="password_lama" placeholder="Enter Old Password" required>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please input your old password.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="password_baru" class="col-form-label">New Password</label>
+                            <input type="password" class="form-control" id="password_baru" name="password_baru" placeholder="Enter New Password" required>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please input your new password.
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section script_user{
+    <script>
+        $(document).ready(function () {
+            $('#ChangePasswordForm').submit(function (e) {
+                e.preventDefault();
+                change();
+            })
+        })
+
+        const change = () => {
+            let data_change = {
+                oldPassword: $("#password_lama").val(),
+                newPassword: $("#password_baru").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "ChangePasswordAPI",
+                data: data_change,
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Please wait...',
+                        showConfirmButton: false,
+                        backdrop: `rgba(0,0,0,0.6)`
+                    })
+                },
+                success: (data) => {
+                    console.log(data)
+                    //alert(data)
+                    Swal.fire({
+                        text: 'Password has been change',
+                        icon: 'success',
+                        //confirmButtonText: 'Go to Login Page'
+
+                    }).then((data) => {
+                        // Reload the Page
+                        location.reload();
+                    });
+                },
+                error: (data) => {
+                    console.log(data)
+                    //alert(data)
+                }
+            });
+        }
+    </script>
+}

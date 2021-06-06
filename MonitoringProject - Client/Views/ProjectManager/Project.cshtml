@@ -1,0 +1,274 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "DashboardLayout";
+}
+
+<h1> Project List</h1>
+<div>
+    <button type="button" class="btn btn-success" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAdd" data-placement="top" title="New Project" onclick=""><i class="fa fa-plus" aria-hidden="true"></i></button>
+</div>
+
+<div class="p-3">
+    <table id="tbl_project" class="display">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Project Name</th>
+                <th>Start Date</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@*modal add*@
+<div class="modal" id="modalAdd">
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2 class="modal-title">New Project</h2>
+        </div>
+        <!-- Modal body -->
+        <form class="needs-validation" id="AddProjectForm" novalidate>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="name" class="col-form-label"> Project Name</label>
+                        <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Enter Name" required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please input your project name.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="projectdescription" class="col-form-label"> Project Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Description" id="project_description" name="project_description" required></textarea>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please input your project description.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="startdate" class="col-form-label">Start Date</label>
+                        <input type="date" class="form-control" id="project_startdate" name="project_startdate" placeholder="Enter StartDate" required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please input your project startdate.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label for="deadline" class="col-form-label">Deadline</label>
+                        <input type="date" class="form-control" id="project_deadline" name="project_deadline" placeholder="Enter Deadline" required>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please input your project deadline.
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section script_user{
+    <script>
+
+        $(document).ready(function () {
+
+            $('#AddProjectForm').submit(function (e) {
+                e.preventDefault()
+                AddProject()
+            })
+
+        })
+
+        //table
+        let table = $('#tbl_project').DataTable({
+            ajax: {
+                url: "GetProjects",
+                dataSrc: ""
+            },
+            columns: [
+                //No
+                {
+                    "render": (data, type, row, meta) => {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                //Project Name
+                { "data": "projectName" },
+                //Start Date
+                {
+                    "data": "startDate",
+                    "render": (startDate) => {
+                        let date = moment(startDate)
+                        return date.format('DD MMMM YYYY');
+                    }
+                },
+                //Deadline
+                {
+                    "data": "endDate",
+                    "render": (endDate) => {
+                        let date = moment(endDate)
+                        return date.format('DD MMMM YYYY');
+                    }
+                },
+                //Status
+                { "data": "status" },
+                //Action
+                {
+                    'data': 'projectID',
+                    "render": function (id) {
+                        return `<button class="popup btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Module(${id})"><i class= "fa fa-folder-open-o"></i></button> |<button class="popup btn btn-success" data-toggle="tooltip" data-placement="top" title="Open Report Project" id="btnReport" onclick="Report(${id})"><i class= "fa fa-sticky-note"></i></button> | <button class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></button> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Mark Project Late" id="btnLate" onclick="Late(${id})"><i class= "fa fa-flag"></i></button>`;
+                    }
+                }
+            ]
+        })
+
+        const Late = (id) => {
+            $.ajax({
+                type: "POST",
+                url: `MarkProjectLate/${id}`,
+                success: (data) => {
+                    Swal.fire({
+                        text: `Project status changed to "Late"`,
+                        icon: 'success',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                    table.ajax.reload()
+                },
+                error: (data) => {
+                    Swal.fire({
+                        text: `Error running task`,
+                        icon: 'error',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                    table.ajax.reload()
+                }
+            })
+        }
+
+        const Delete = (id) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `DeleteProject/${id}`,
+                        success: () => {
+                            Swal.fire(
+                                'Deleted!',
+                                'Project has been deleted.',
+                                'success'
+                            )
+                            table.ajax.reload()
+                        },
+                        error: () => {
+                            Swal.fire(
+                                'Failed!',
+                                'Error deleting project.',
+                                'error'
+                            )
+                        }
+                    })
+                    
+                }
+            })
+        }
+
+        const AddProject = () => {
+            let project = {
+                ProjectName: $('#project_name').val(),
+                Description: $('#project_description').val(),
+                StartDate: $('#project_startdate').val(),
+                EndDate: $('#project_deadline').val(),
+                Status: "In-Progress"
+            }
+            console.log(project)
+            $.ajax({
+                type: "POST",
+                url: "AddProject",
+                data: project,
+                success: (data) => {
+                    $('#modalAdd').modal('hide')
+                    if (data == 200) {
+                        Swal.fire({
+                            text: 'New Project created!',
+                            icon: 'success',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                        table.ajax.reload()
+                    } else {
+                        Swal.fire({
+                            text: 'Error creating project!',
+                            icon: 'error',
+                            timer: 10000,
+                            timerProgressBar: true
+                        });
+                    }
+                },
+                error: (data) => {
+                    $('#modalAdd').modal('hide')
+                    Swal.fire({
+                        text: 'Error creating project!',
+                        icon: 'error',
+                        timer: 10000,
+                        timerProgressBar: true
+                    });
+                }
+            })
+        }
+
+        const Module = (id) => {
+            //alert(projectId)
+            $.ajax({
+                type: "GET",
+                url: `GoModule/${id}`,
+                success: (data) => {
+                    window.location.href = data
+                },
+                error: (data) => {
+                    alert(data)
+                }
+            })
+        }
+
+        const Report = (id) => {
+            //alert(projectId)
+            $.ajax({
+                type: "GET",
+                url: `GoReport/${id}`,
+                success: (data) => {
+                    window.location.href = data
+                },
+                error: (data) => {
+                    alert(data)
+                }
+            })
+        }
+
+    </script>
+}

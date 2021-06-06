@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MonitoringProject___API.Middleware;
 using MonitoringProject___API.Repositories.Data;
 using System;
 using System.Collections.Generic;
@@ -33,28 +34,36 @@ namespace MonitoringProject___Client
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(1000);
+                options.Cookie.Name = "JWT-Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(10000);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
                     ValidIssuer = "Alfan",
                     ValidAudience = "Daniel",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:secret"]))
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt-cookie"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
-
-
-
             services.AddControllersWithViews();
         }
 

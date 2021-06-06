@@ -18,7 +18,7 @@ namespace MonitoringProject___API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Project Manager")]
+    [Authorize]
     public class ProjectsController : BaseController<Project, ProjectRepository, int>
     {
         private readonly MyContext context;
@@ -30,6 +30,7 @@ namespace MonitoringProject___API.Controllers
         }
 
         [HttpPost("create-new-project")]
+        [Authorize(Roles = "Project Manager")]
         public IActionResult CreateProject(Project project)
         {
             string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
@@ -57,20 +58,32 @@ namespace MonitoringProject___API.Controllers
             return BadRequest(new { Status = "Error", Message = "Create Project failed" });
         }
 
-        [HttpGet("get-members")]
-        public List<User> GetMembers()
+        [HttpGet("get-project-by-user")]
+        public List<Project> GetProjectByUser()
         {
-            string query = "SELECT * FROM [dbo].[TB_M_User] WHERE RoleID=2"; 
             try
             {
-                List<User> Members = dapper.GetAllNoParam<User>(query, CommandType.Text);
+                string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+                var jwtReader = new JwtSecurityTokenHandler();
+                var jwt = jwtReader.ReadJwtToken(token);
 
-                return Members;
+                var email = jwt.Claims.First(c => c.Type == "email").Value;
+                var isExist = context.Users.FirstOrDefault(u => u.Email == email);
+                if (isExist != null)
+                {
+                    string query = string.Format("SELECT P.ProjectID, P.ProjectName, P.Description, P.StartDate, P.EndDate, P.Status FROM TB_M_Project AS P JOIN TB_T_ProjectUser AS PU ON P.ProjectID=PU.ProjectID WHERE PU.UserID={0}", isExist.UserID);
+
+                    List<Project> Projects = dapper.GetAllNoParam<Project>(query, CommandType.Text);
+
+                    return Projects;
+                }
+                return null;
             }
             catch (Exception e)
             {
                 throw e;
             }
+
         }
     }
 }

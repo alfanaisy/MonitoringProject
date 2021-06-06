@@ -6,6 +6,7 @@ using MonitoringProject___API.Context;
 using MonitoringProject___API.Models;
 using MonitoringProject___API.Repositories.Data;
 using MonitoringProject___API.Repositories.Interfaces;
+using MonitoringProject___API.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,9 +28,9 @@ namespace MonitoringProject___API.Controllers
             this.dapper = dapper;
         }
 
-        [HttpPost("create-report")]
+        [HttpPost("create-report/{id}")]
         [Authorize(Roles = "Project Member")]
-        public IActionResult CreateReport(Report report, int projectId)
+        public IActionResult CreateReport(Report report, int id)
         {
             var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var jwtReader = new JwtSecurityTokenHandler();
@@ -44,7 +45,7 @@ namespace MonitoringProject___API.Controllers
                 dbparams.Add("Content", report.Content, DbType.String);
                 dbparams.Add("ReportDate", report.ReportDate, DbType.DateTime);
                 dbparams.Add("TaskId", report.TaskID, DbType.Int32);
-                dbparams.Add("ProjectId", projectId, DbType.Int32);
+                dbparams.Add("ProjectId", id, DbType.Int32);
                 dbparams.Add("UserId", isExist.UserID, DbType.Int32);
 
                 var result = System.Threading.Tasks.Task.FromResult(dapper.Insert<int>("[dbo].[SP_SubmitReport]", dbparams, commandType: CommandType.StoredProcedure));
@@ -78,6 +79,24 @@ namespace MonitoringProject___API.Controllers
             catch (Exception)
             {
                 return NoContent();
+            }
+        }
+
+        [HttpGet("get-report-by-project/{id}")]
+        public IActionResult GetReportByProject(int id)
+        {
+            try
+            {
+                var dbparams = new DynamicParameters();
+                dbparams.Add("projectId", id, DbType.Int32);
+
+                List<dynamic> reports = dapper.GetAll<dynamic>("SP_GetReports", dbparams, CommandType.StoredProcedure);
+
+                return Ok(reports);
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }

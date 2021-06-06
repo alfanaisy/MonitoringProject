@@ -26,8 +26,6 @@ namespace MonitoringProject___Client.Controllers
         public IActionResult Index()
         {
             var token = HttpContext.Session.GetString("JWToken");
-
-
             if (token != null)
             {
                 var jwtReader = new JwtSecurityTokenHandler();
@@ -38,29 +36,6 @@ namespace MonitoringProject___Client.Controllers
                 return View(); 
             }
             return Unauthorized();
-        }
-
-        public IActionResult GetProjects()
-        {
-            return View();
-        }
-
-        public string GetProjectAPI()
-        {
-            var token = HttpContext.Session.GetString("JWToken");
-            if (token != null)
-            {
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/projects").Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var projects = result.Content.ReadAsStringAsync();
-                    ViewData["projects"] = projects;
-                    return Url.Action("GetProjects", "Home"); 
-                }
-            }
-            return "Unauthorized";
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
