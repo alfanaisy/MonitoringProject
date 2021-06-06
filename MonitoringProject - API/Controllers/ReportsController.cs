@@ -6,6 +6,7 @@ using MonitoringProject___API.Context;
 using MonitoringProject___API.Models;
 using MonitoringProject___API.Repositories.Data;
 using MonitoringProject___API.Repositories.Interfaces;
+using MonitoringProject___API.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -82,16 +83,16 @@ namespace MonitoringProject___API.Controllers
         }
 
         [HttpGet("get-report-by-project/{id}")]
-        [Authorize(Roles = "Project Member")]
-        public List<dynamic> GetReportByProject(int id)
+        public IActionResult GetReportByProject(int id)
         {
             try
             {
-                string query = string.Format("SELECT R.Title, R.Content, R.ReportDate, T.TaskName FROM TB_M_Report AS R JOIN TB_T_ReportProject AS RP ON R.ReportID= RP.ReportID JOIN TB_M_Task AS T ON T.TaskID=R.TaskID WHERE RP.ProjectID={0}", id);
+                var dbparams = new DynamicParameters();
+                dbparams.Add("projectId", id, DbType.Int32);
 
-                List<dynamic> reports = dapper.GetAllNoParam<dynamic>(query, CommandType.Text);
+                List<ReportVM> reports = dapper.GetAll<ReportVM>("SP_GetReports", dbparams, CommandType.StoredProcedure);
 
-                return reports;
+                return Ok(reports);
             }
             catch (Exception e)
             {

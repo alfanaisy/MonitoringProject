@@ -16,6 +16,7 @@
                 <th>Content</th>
                 <th>ReportDate</th>
                 <th>TaskName</th>
+                <th>Member</th>
             </tr>
         </thead>
     </table>
@@ -23,10 +24,13 @@
 
 @section script_user{
     <script>
-    $(document).ready(function(){
-    })
+        $(document).ready(function () {
+            
+        })
 
-    let table = $('#tbl_project_report').DataTable({
+        
+
+        let table = $('#tbl_project_report').DataTable({
             ajax: {
                 url: `GetReports`,
                 dataSrc: ""
@@ -51,8 +55,10 @@
                     }
                 },
                 //taskName
-                { "data": "taskName" }
+                { "data": "taskName" },
+                { "data": "name" },
             ]
-    })
+        })
+
     </script>
 }

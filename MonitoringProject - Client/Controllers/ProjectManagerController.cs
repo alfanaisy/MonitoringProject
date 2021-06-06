@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.Models;
+using MonitoringProject___API.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -524,7 +525,7 @@ namespace MonitoringProject___Client.Controllers
         }
 
         [HttpGet]
-        public List<dynamic> GetReports()
+        public List<ReportVM> GetReports()
         {
             var token = HttpContext.Session.GetString("JWToken");
             var projectId = HttpContext.Session.GetInt32("projectId");
@@ -532,11 +533,11 @@ namespace MonitoringProject___Client.Controllers
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync(string.Format("https://localhost:44380/api/reports/get-report-by-project/{0}", projectId)).Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/Reports/get-report-by-project/{0}", projectId)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var reports = result.Content.ReadAsStringAsync().Result;
-                    var data = JsonConvert.DeserializeObject<List<dynamic>>(reports);
+                    var data = JsonConvert.DeserializeObject<List<ReportVM>>(reports);
                     return data;
                 }
             }
