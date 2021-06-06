@@ -27,7 +27,7 @@
     </table>
 </div>
 
-<div id="PlanChart"></div>
+<div id="ModuleChart"></div>
 
 @*modal Add Module*@
 <div class="modal" id="modalAddModule">
@@ -93,7 +93,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
+                    <button type="submit" id="btnSaveModule" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -135,7 +135,7 @@
 </div>
 
 @section script_user{
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
     <script>
 
         $(document).ready(function () {
@@ -158,11 +158,7 @@
                 AddMember()
             })
 
-            //
-
-            CreatePlanData()
-
-            //
+            
 
             var options = {
                 chart: {
@@ -179,7 +175,7 @@
                     text: 'Project Plan Timeline',
                 },
                 noData: {
-                    text: 'Loading...'
+                    text: 'No Data'
                 },
                 plotOptions: {
                     bar: {
@@ -205,13 +201,13 @@
             }
 
             var chart = new ApexCharts(
-                document.querySelector("#PlanChart"),
+                document.querySelector("#ModuleChart"),
                 options
             );
 
             chart.render();
 
-            $.getJSON('GetPlanChartData', function (response) {
+            $.getJSON('GetModuleChart', function (response) {
                 chart.updateSeries([{
                     name: 'Plan Data',
                     data: response
@@ -430,19 +426,5 @@
             })
         }
         
-
-        const CreatePlanData = () => {
-            $.ajax({
-                type: "GET",
-                url: "GetPlanChartData",
-                success: (data) => {
-                    console.log(data)
-                },
-                error: (data) => {
-                    console.log(data)
-                }
-            })
-        }
-
     </script>
 }

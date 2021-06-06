@@ -417,22 +417,69 @@ namespace MonitoringProject___Client.Controllers
 
         //CHART START
 
-        public List<object> GetPlanChartData()
+        public List<object> GetModuleChart()
         {
             var modules = GetModules();
             List<object> data = new List<object>();
             for (int i = 0; i < modules.Count; i++)
             {
+                string color = "";
+                if(modules[i].Status == "Finished")
+                {
+                    color = "#078a00";
+                }
+                else if(modules[i].Status == "In-Progress")
+                {
+                    color = "#008FFB";
+                }
+                else
+                {
+                    color = "#8d0000";
+                }
                 data.Add(new
                 {
                     x = modules[i].ModuleName,
-                    y = new dynamic[]
-                        {
+                    y = new dynamic[]{
                             //modules[i].StartDate.ToString("yyyy-MM-dd"),
                             //modules[i].EndDate.ToString("yyyy-MM-dd")
                             MilliTimeStamp(modules[i].StartDate),
                             MilliTimeStamp(modules[i].EndDate)
-                        }
+                        },
+                    fillColor = color
+                });
+            }
+            return data;
+        }
+
+        public List<object> GetTaskChart()
+        {
+            var tasks = GetTasks();
+            List<object> data = new List<object>();
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                string color = "";
+                if (tasks[i].Status == "Finished")
+                {
+                    color = "#078a00";
+                }
+                else if (tasks[i].Status == "In-Progress")
+                {
+                    color = "#008FFB";
+                }
+                else
+                {
+                    color = "#8d0000";
+                }
+                data.Add(new
+                {
+                    x = tasks[i].TaskName,
+                    y = new dynamic[]{
+                            //modules[i].StartDate.ToString("yyyy-MM-dd"),
+                            //modules[i].EndDate.ToString("yyyy-MM-dd")
+                            MilliTimeStamp(tasks[i].StartDate),
+                            MilliTimeStamp(tasks[i].EndDate)
+                        },
+                    fillColor = color
                 });
             }
             return data;

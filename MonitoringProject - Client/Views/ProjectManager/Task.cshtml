@@ -29,6 +29,8 @@
     </table>
 </div>
 
+<div id="TaskChart"></div>
+
 @*modal add task*@
 <div class="modal" id="modalAddTask">
     <div class="modal-dialog">
@@ -156,6 +158,60 @@
                 e.preventDefault()
                 AssignMember()
             })
+
+            var options = {
+                chart: {
+                    height: 350,
+                    type: 'rangeBar',
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                series: [
+
+                ],
+                title: {
+                    text: 'Project Plan Timeline',
+                },
+                noData: {
+                    text: 'No Data'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        distributed: true,
+                        dataLabels: {
+                            hideOverflowingLabels: false
+                        }
+                    }
+                },
+                xaxis: {
+                    type: 'datetime'
+                },
+                yaxis: {
+                    show: false
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f4f5', '#fff'],
+                        opacity: 1
+                    }
+                }
+            }
+
+            var chart = new ApexCharts(
+                document.querySelector("#TaskChart"),
+                options
+            );
+
+            chart.render();
+
+            $.getJSON('GetTaskChart', function (response) {
+                chart.updateSeries([{
+                    name: 'Plan Data',
+                    data: response
+                }])
+            });
 
         })
 
