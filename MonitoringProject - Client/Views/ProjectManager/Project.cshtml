@@ -132,7 +132,7 @@
                 {
                     'data': 'projectID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Module(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
+                        return `<a class="popup btn btn-warning" data-toggle="tooltip" data-placement="top" title="Open Project" id="btnEdit" onclick="Module(${id})"><i class= "fa fa-folder-open-o"></i></a> |<a class="popup btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open Report Project" id="btnReport" onclick="Report(${id})"><i class= "fa fa-folder-open-o"></i></a> | <button class="popup btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project" id="btnDelete" onclick="Delete(${id})"><i class="fa fa-trash"></i></a>`;
                     }
                 }
             ]
@@ -222,6 +222,20 @@
             $.ajax({
                 type: "GET",
                 url: `GoModule/${id}`,
+                success: (data) => {
+                    window.location.href = data
+                },
+                error: (data) => {
+                    alert(data)
+                }
+            })
+        }
+
+        const Report = (id) => {
+            //alert(projectId)
+            $.ajax({
+                type: "GET",
+                url: `GoReport/${id}`,
                 success: (data) => {
                     window.location.href = data
                 },

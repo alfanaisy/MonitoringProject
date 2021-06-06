@@ -80,5 +80,23 @@ namespace MonitoringProject___API.Controllers
                 return NoContent();
             }
         }
+
+        [HttpGet("get-report-by-project/{id}")]
+        [Authorize(Roles = "Project Member")]
+        public List<dynamic> GetReportByProject(int id)
+        {
+            try
+            {
+                string query = string.Format("SELECT R.Title, R.Content, R.ReportDate, T.TaskName FROM TB_M_Report AS R JOIN TB_T_ReportProject AS RP ON R.ReportID= RP.ReportID JOIN TB_M_Task AS T ON T.TaskID=R.TaskID WHERE RP.ProjectID={0}", id);
+
+                List<dynamic> reports = dapper.GetAllNoParam<dynamic>(query, CommandType.Text);
+
+                return reports;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
     }
 }
