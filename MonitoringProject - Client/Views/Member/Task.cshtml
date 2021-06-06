@@ -50,7 +50,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="content" class="col-form-label"> Project Report Content</label>
+                            <label for="content" class="col-form-label"> Content</label>
                             <textarea class="form-control" rows="3" placeholder="Content" id="report_content" name="report_content" required></textarea>
                         </div>
                         <div class="invalid-feedback">
@@ -59,14 +59,14 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="name" class="col-form-label"> Project Member</label>
+                            <label for="name" class="col-form-label"> Task Name</label>
                             <select id="optiontask" name="optiontask" class="form-control" style="width: 100%" required>
                                 @*<option selected>daniel</option>
                                     <option selected>alfan</option>*@
                             </select>
                         </div>
                         <div class="invalid-feedback">
-                            Please input your project member.
+                            Please input your task name.
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                 }
             ],
             "orderFixed": {
-                "pre": [5, 'desc']
+                "pre": [5, 'asc']
             }
         })
 

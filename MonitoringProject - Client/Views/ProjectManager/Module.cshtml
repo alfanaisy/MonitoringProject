@@ -182,7 +182,7 @@
                         horizontal: true,
                         distributed: true,
                         dataLabels: {
-                            hideOverflowingLabels: false
+                            hideOverflowingLabels: true
                         }
                     }
                 },
@@ -208,6 +208,7 @@
             chart.render();
 
             $.getJSON('GetModuleChart', function (response) {
+                console.log(response);
                 chart.updateSeries([{
                     name: 'Plan Data',
                     data: response

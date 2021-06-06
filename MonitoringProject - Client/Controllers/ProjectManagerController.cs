@@ -440,8 +440,6 @@ namespace MonitoringProject___Client.Controllers
                 {
                     x = modules[i].ModuleName,
                     y = new dynamic[]{
-                            //modules[i].StartDate.ToString("yyyy-MM-dd"),
-                            //modules[i].EndDate.ToString("yyyy-MM-dd")
                             MilliTimeStamp(modules[i].StartDate),
                             MilliTimeStamp(modules[i].EndDate)
                         },
