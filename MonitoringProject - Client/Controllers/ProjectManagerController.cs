@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonitoringProject___API.Models;
+using MonitoringProject___API.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -562,6 +563,23 @@ namespace MonitoringProject___Client.Controllers
             else
             {
                 return RedirectToAction("Index", "Authentication");
+            }
+        }
+
+        public IActionResult ChangePasswordAPI(Change change )
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(change), Encoding.UTF8, "application/json");
+            var result = client.PutAsync("https://localhost:44380/api/accounts/change-password", stringContent).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return Ok(new { result });
+            }
+            else
+            {
+                return BadRequest(new { result });
             }
         }
     }
