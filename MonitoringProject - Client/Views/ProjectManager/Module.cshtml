@@ -158,8 +158,13 @@
                 AddMember()
             })
 
+
+            updateChart()
             
 
+        })
+
+        const updateChart = () => {
             var options = {
                 chart: {
                     height: 350,
@@ -169,7 +174,7 @@
                     enabled: false
                 },
                 series: [
-                    
+
                 ],
                 title: {
                     text: 'Project Plan Timeline',
@@ -214,8 +219,7 @@
                     data: response
                 }])
             });
-
-        })
+        }
 
         //table
         let table = $('#tbl_project_module').DataTable({
@@ -297,6 +301,7 @@
                         timerProgressBar: true
                     });
                     table.ajax.reload()
+                    updateChart()
                 },
                 error: (data) => {
                     Swal.fire({
@@ -344,6 +349,7 @@
                                 'success'
                             )
                             table.ajax.reload()
+                            updateChart()
                         },
                         error: () => {
                             Swal.fire(

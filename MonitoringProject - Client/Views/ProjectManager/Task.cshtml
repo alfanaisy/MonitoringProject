@@ -157,6 +157,12 @@
                 AssignMember()
             })
 
+            
+            updateChart();
+
+        })
+
+        const updateChart = () => {
             var options = {
                 chart: {
                     height: 350,
@@ -210,8 +216,7 @@
                     data: response
                 }])
             });
-
-        })
+        }
 
         //table
         let table = $('#tbl_project_task').DataTable({
@@ -295,6 +300,7 @@
                         timerProgressBar: true
                     });
                     table.ajax.reload()
+                    updateChart()
                 },
                 error: (data) => {
                     Swal.fire({
@@ -338,6 +344,7 @@
                                 'success'
                             )
                             table.ajax.reload()
+                            updateChart()
                         },
                         error: () => {
                             Swal.fire(
