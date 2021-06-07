@@ -114,7 +114,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="name" class="col-form-label"> Project Member</label>
-                            <select id="optionmember" name="optionmember" class="form-control" style="width: 100%" required>
+                            <select id="optionmember" name="optionmember" class="form-control" multiple="multiple" style="width: 100%" required>
                                 @*<option selected>daniel</option>
                                     <option selected>alfan</option>*@
                             </select>
@@ -366,15 +366,30 @@
         }
 
         const AssignMember = () => {
-            let taskUser = {
-                userID: $('#optionmember').val(),
-                taskID: $('#taskId').val()
-            }
+            
+            let userIds = $('#optionmember').val()
+            let taskId = $('#taskId').val()
+
+            
+            var users = new Array()
+
+            userIds.forEach((id) => {
+                let user = {
+                    userID: parseInt(id),
+                    taskID: parseInt(taskId)
+                }
+                users.push(user)
+            })
+
+
+            console.log(JSON.stringify(users));
 
             $.ajax({
                 type: "POST",
                 url: "AssignMember",
-                data: taskUser,
+                data: JSON.stringify(users),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 success: (data) => {
                     $('#modalAssignMember').modal('hide')
                     if (data == 200) {
@@ -430,6 +445,7 @@
                             timerProgressBar: true
                         });
                         table.ajax.reload()
+                        updateChart()
                     } else {
                         Swal.fire({
                             text: 'Error creating task!',
