@@ -24,14 +24,16 @@ namespace MonitoringProject___API.Controllers
             this.dapper = dapper;
         }
 
-        [HttpGet("get-members")]
+        [HttpGet("get-members/{id}")]
         [Authorize(Roles = "Project Manager")]
-        public List<User> GetMembers()
+        public List<User> GetMembers(int id)
         {
-            string query = "SELECT * FROM [dbo].[TB_M_User] WHERE RoleID=2";
+            
             try
             {
-                List<User> Members = dapper.GetAllNoParam<User>(query, CommandType.Text);
+                var dbparam = new DynamicParameters();
+                dbparam.Add("ProjectId", id, DbType.Int32);
+                List<User> Members = dapper.GetAll<User>("[dbo].[SP_GetMemberCoba]", dbparam, CommandType.StoredProcedure);
 
                 return Members;
             }
@@ -41,15 +43,16 @@ namespace MonitoringProject___API.Controllers
             }
         }
 
-        [HttpGet("get-project-members/{id}")]
+        [HttpGet("get-project-members")]
         [Authorize(Roles = "Project Manager")]
-        public List<User> GetProjectMembers(int id)
+        public List<User> GetProjectMembers(int id, int taskId)
         {
             
             try
             {
                 var dbparams = new DynamicParameters();
                 dbparams.Add("ProjectId", id, DbType.Int32);
+                dbparams.Add("TaskId", taskId, DbType.Int32);
                 List<User> Members = dapper.GetAll<User>("[dbo].[SP_GetProjectMembers]", dbparams, CommandType.StoredProcedure);
 
                 return Members;

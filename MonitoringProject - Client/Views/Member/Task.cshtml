@@ -8,9 +8,6 @@
     <h1> Task List</h1>
 </div>
 
-<div>
-    <button type="button" class="btn btn-primary" id="btnAdd" style="margin: auto" data-toggle="modal" data-target="#modalAddReport" data-placement="top" title="Add Project Report" onclick=""><i class="fa fa-sticky-note" aria-hidden="true"></i></button>
-</div>
 <div class="p-3">
 <table id="tbl_project_task" class="display">
     <thead>
@@ -55,18 +52,7 @@
                             Please input your project report content.
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label for="name" class="col-form-label"> Task Name</label>
-                            <select id="optiontask" name="optiontask" class="form-control" style="width: 100%" required>
-                                @*<option selected>daniel</option>
-                                    <option selected>alfan</option>*@
-                            </select>
-                        </div>
-                        <div class="invalid-feedback">
-                            Please input your task name.
-                        </div>
-                    </div>
+                    <input type="hidden" name="taskId" id="taskId" />
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -135,7 +121,7 @@
                 {
                     'data': 'taskID',
                     "render": function (id) {
-                        return `<a class="popup btn btn-success" data-toggle="tooltip" data-placement="top" title="Mark Task Done" id="btnEdit" onclick="Done(${id})"><i class= "fa fa-check"></i></a>`;
+                        return `<button class="popup btn btn-success" data-toggle="tooltip" data-placement="top" title="Mark Task Done" id="btnEdit" onclick="Done(${id})"><i class= "fa fa-check"></i></button> | <button type="button" class="btn btn-primary" id="btnAdd" style="margin: auto" data-placement="top" title="Add Project Report" onclick="modalReport(${id})"><i class="fa fa-sticky-note" aria-hidden="true"></i></button>`;
                     }
                 }
             ],
@@ -143,6 +129,11 @@
                 "pre": [5, 'asc']
             }
         })
+
+        const modalReport = (id) => {
+            $('#taskId').val(id)
+            $('#modalAddReport').modal('show')
+        }
 
         const Done = (id) => {
             $.ajax({
@@ -201,7 +192,7 @@
                 Title: $('#report_title').val(),
                 Content: $('#report_content').val(),
                 ReportDate: new Date().toISOString(),
-                TaskID: $('#optiontask').val(),
+                TaskID: $('#taskId').val(),
             }
             console.log(report)
             $.ajax({

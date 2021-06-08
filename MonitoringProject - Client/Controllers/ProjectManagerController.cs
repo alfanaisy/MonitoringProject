@@ -300,11 +300,12 @@ namespace MonitoringProject___Client.Controllers
         public List<User> GetMembers()
         {
             var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/users/get-members").Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-members/{0}", projectId)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var members = result.Content.ReadAsStringAsync().Result;
@@ -315,29 +316,46 @@ namespace MonitoringProject___Client.Controllers
             return null;
         }
 
-        public HttpStatusCode AddMember(ProjectUser projectUser)
+        [HttpPost]
+        public HttpStatusCode AddMember([FromBody] List<string> userIds)
         {
             var token = HttpContext.Session.GetString("JWToken");
             var projectId = HttpContext.Session.GetInt32("projectId");
 
-            projectUser.ProjectID = projectId.Value;
+            int count = 0;
 
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(projectUser), Encoding.UTF8, "application/json");
-                var result = client.PostAsync("https://localhost:44380/api/projectusers", stringContent).Result;
-                if (result.IsSuccessStatusCode)
+
+                var projectUser = new ProjectUser();
+                projectUser.ProjectID = projectId.Value;
+
+                for (int i = 0; i < userIds.Count(); i++)
+                {
+                    projectUser.UserID = Int16.Parse(userIds[i]);
+                    StringContent stringContent = new StringContent(JsonConvert.SerializeObject(projectUser), Encoding.UTF8, "application/json");
+                    var result = client.PostAsync("https://localhost:44380/api/projectusers", stringContent).Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        count++;
+                    }
+                }
+
+                if (count != 0)
                 {
                     return HttpStatusCode.OK;
                 }
                 return HttpStatusCode.BadRequest;
             }
-            return HttpStatusCode.Unauthorized;
+            else
+            {
+                return HttpStatusCode.Unauthorized;
+            }
         }
 
-        public List<User> GetProjectMembers()
+        public List<User> GetProjectMembers(int id)
         {
             var token = HttpContext.Session.GetString("JWToken");
             var projectId = HttpContext.Session.GetInt32("projectId");
@@ -345,7 +363,7 @@ namespace MonitoringProject___Client.Controllers
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-project-members/{0}", projectId)).Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-project-members?id={0}&taskId={1}", projectId, id)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var members = result.Content.ReadAsStringAsync().Result;
@@ -356,21 +374,31 @@ namespace MonitoringProject___Client.Controllers
             return null;
         }
 
-        public HttpStatusCode AssignMember(TaskUser taskUser)
+        public HttpStatusCode AssignMember([FromBody]List<TaskUser> taskUser)
         {
             var token = HttpContext.Session.GetString("JWToken");
-
+            int count = 0;
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(taskUser), Encoding.UTF8, "application/json");
-                var result = client.PostAsync("https://localhost:44380/api/taskusers", stringContent).Result;
-                if (result.IsSuccessStatusCode)
+                for (int i = 0; i < taskUser.Count(); i++)
+                {
+                    StringContent stringContent = new StringContent(JsonConvert.SerializeObject(taskUser.ElementAt(i)), Encoding.UTF8, "application/json");
+                    var result = client.PostAsync("https://localhost:44380/api/taskusers", stringContent).Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        count++;
+                    }
+                }
+                
+                if(count != 0)
                 {
                     return HttpStatusCode.OK;
                 }
+
                 return HttpStatusCode.BadRequest;
+               
             }
             return HttpStatusCode.Unauthorized;
         }

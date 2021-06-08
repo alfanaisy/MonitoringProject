@@ -105,7 +105,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h2 class="modal-title">Add Project Member</h2>
+                <h2 class="modal-title">Assign Member</h2>
             </div>
             <!-- Modal body -->
             <form class="needs-validation" id="AssignMemberForm" novalidate>
@@ -114,7 +114,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="name" class="col-form-label"> Project Member</label>
-                            <select id="optionmember" name="optionmember" class="form-control" style="width: 100%" required>
+                            <select id="optionmember" name="optionmember" class="form-control" multiple="multiple" style="width: 100%" required>
                                 @*<option selected>daniel</option>
                                     <option selected>alfan</option>*@
                             </select>
@@ -139,7 +139,7 @@
 
         $(document).ready(function () {
 
-            Members()
+            
             Modules()
 
             $('#AddTaskForm').submit(function (e) {
@@ -157,6 +157,12 @@
                 AssignMember()
             })
 
+            
+            updateChart();
+
+        })
+
+        const updateChart = () => {
             var options = {
                 chart: {
                     height: 350,
@@ -210,8 +216,7 @@
                     data: response
                 }])
             });
-
-        })
+        }
 
         //table
         let table = $('#tbl_project_task').DataTable({
@@ -295,6 +300,7 @@
                         timerProgressBar: true
                     });
                     table.ajax.reload()
+                    updateChart()
                 },
                 error: (data) => {
                     Swal.fire({
@@ -338,6 +344,7 @@
                                 'success'
                             )
                             table.ajax.reload()
+                            updateChart()
                         },
                         error: () => {
                             Swal.fire(
@@ -354,20 +361,36 @@
 
         const OpenAssignModal = (id) => {
             //let myModal = $('#modalAssignMember')
+            Members(id)
             $('#taskId').val(id)
             $('#modalAssignMember').modal('show')
         }
 
         const AssignMember = () => {
-            let taskUser = {
-                userID: $('#optionmember').val(),
-                taskID: $('#taskId').val()
-            }
+            
+            let userIds = $('#optionmember').val()
+            let taskId = $('#taskId').val()
+
+            
+            var users = new Array()
+
+            userIds.forEach((id) => {
+                let user = {
+                    userID: parseInt(id),
+                    taskID: parseInt(taskId)
+                }
+                users.push(user)
+            })
+
+
+            console.log(JSON.stringify(users));
 
             $.ajax({
                 type: "POST",
                 url: "AssignMember",
-                data: taskUser,
+                data: JSON.stringify(users),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 success: (data) => {
                     $('#modalAssignMember').modal('hide')
                     if (data == 200) {
@@ -423,6 +446,7 @@
                             timerProgressBar: true
                         });
                         table.ajax.reload()
+                        updateChart()
                     } else {
                         Swal.fire({
                             text: 'Error creating task!',
@@ -444,10 +468,10 @@
             })
         }
 
-        const Members = () => {
+        const Members = (id) => {
             $.ajax({
                 type: "GET",
-                url: "GetProjectMembers",
+                url: `GetProjectMembers/${id}`,
                 success: (data) => {
 
                     console.log(data)

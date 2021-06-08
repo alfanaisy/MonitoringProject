@@ -114,9 +114,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="name" class="col-form-label"> Project Member</label>
-                            <select id="optionmember" name="optionmember" class="form-control" style="width: 100%" required>
-                                @*<option selected>daniel</option>
-                                <option selected>alfan</option>*@
+                            <select id="optionmember" name="optionmember" class="form-control" multiple="multiple" style="width: 100%" required>
                             </select>
                         </div>
                         <div class="invalid-feedback">
@@ -158,8 +156,13 @@
                 AddMember()
             })
 
+
+            updateChart()
             
 
+        })
+
+        const updateChart = () => {
             var options = {
                 chart: {
                     height: 350,
@@ -169,7 +172,7 @@
                     enabled: false
                 },
                 series: [
-                    
+
                 ],
                 title: {
                     text: 'Project Plan Timeline',
@@ -214,8 +217,7 @@
                     data: response
                 }])
             });
-
-        })
+        }
 
         //table
         let table = $('#tbl_project_module').DataTable({
@@ -297,6 +299,7 @@
                         timerProgressBar: true
                     });
                     table.ajax.reload()
+                    updateChart()
                 },
                 error: (data) => {
                     Swal.fire({
@@ -344,6 +347,7 @@
                                 'success'
                             )
                             table.ajax.reload()
+                            updateChart()
                         },
                         error: () => {
                             Swal.fire(
@@ -359,15 +363,23 @@
         }
 
         const AddMember = () => {
-            let data = {
-                userID : $('#optionmember').val()
-            }
+            //let data = {
+            //    userID: $('#optionmember').val()
+            //}
+            let id = $('#optionmember').val()
+            //var data = [
+            //    { userID: 1 },
+            //    { userID: 2 }
+            //];
 
+            //data = JSON.stringify({ 'data': id });
             //alert(userId)
             $.ajax({
                 type: "POST",
                 url: "AddMember",
-                data: data,
+                data: JSON.stringify(id),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
                 success: (data) => {
                     $('#modalAddMember').modal('hide')
                     if (data == 200) {
@@ -394,7 +406,7 @@
                         timer: 10000,
                         timerProgressBar: true
                     });
-                } 
+                }
             })
         }
 
@@ -421,6 +433,7 @@
                             timerProgressBar: true
                         });
                         table.ajax.reload()
+                        updateChart()
                     } else {
                         Swal.fire({
                             text: 'Error creating project module!',
