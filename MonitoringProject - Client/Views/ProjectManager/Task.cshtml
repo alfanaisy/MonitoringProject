@@ -105,7 +105,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h2 class="modal-title">Add Project Member</h2>
+                <h2 class="modal-title">Assign Member</h2>
             </div>
             <!-- Modal body -->
             <form class="needs-validation" id="AssignMemberForm" novalidate>
@@ -139,7 +139,7 @@
 
         $(document).ready(function () {
 
-            Members()
+            
             Modules()
 
             $('#AddTaskForm').submit(function (e) {
@@ -361,6 +361,7 @@
 
         const OpenAssignModal = (id) => {
             //let myModal = $('#modalAssignMember')
+            Members(id)
             $('#taskId').val(id)
             $('#modalAssignMember').modal('show')
         }
@@ -467,10 +468,10 @@
             })
         }
 
-        const Members = () => {
+        const Members = (id) => {
             $.ajax({
                 type: "GET",
-                url: "GetProjectMembers",
+                url: `GetProjectMembers/${id}`,
                 success: (data) => {
 
                     console.log(data)

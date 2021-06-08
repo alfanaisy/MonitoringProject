@@ -7,12 +7,12 @@
 
 <div class="register-box">
     <div class="register-logo">
-        <b>Admin</b>LTE
+        <b>Monitoring</b>Project
     </div>
 
     <div class="card">
         <div class="card-body register-card-body">
-            <p class="login-box-msg">Register a new membership</p>
+            <p class="login-box-msg">Register a new account</p>
 
             <form id="RegisterMemberForm">
                 <div class="input-group mb-3">
@@ -39,9 +39,25 @@
                         </div>
                     </div>
                 </div>
+                <label>Register As : </label>
+                <fieldset class="input-group mb-3">
+                    <div id="radioRole">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="role" id="member" value="Member">
+                            <label class="form-check-label" for="member">
+                                Member
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="role" id="manager" value="Manager">
+                            <label class="form-check-label" for="manager">
+                                Manager
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
                 <div class="row">
                     <div class="col-8">
-                        <a asp-controller="Authentication" asp-action="RegisterProjectManager" class="text-center">Register a new Project Manager</a>
                     </div>
                     <!-- /.col -->
                     <div class="col-4">
@@ -68,9 +84,53 @@
         $(document).ready(function () {
             $('#RegisterMemberForm').submit(function (e) {
                 e.preventDefault();
-                register();
+
+                let role = $("input[type='radio'][name='role']:checked").val()
+
+                if (role === "Member") {
+                    register();
+                } else {
+                    registerManager();
+                }
+                
             })
         })
+
+        const registerManager = () => {
+            let User = {
+                name: $("#name").val(),
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "RegisterProjectManagerAPI",
+                data: User,
+                beforeSend: () => {
+                    Swal.fire({
+                        title: 'Please wait...',
+                        showConfirmButton: false,
+                        backdrop: `rgba(0,0,0,0.6)`
+                    })
+                },
+                success: (data) => {
+                    console.log(data)
+                    //alert(data)
+                    Swal.fire({
+                        text: 'Register as manager successful',
+                        icon: 'success',
+                        timer: 10000
+                    }).then(() => {
+                        window.location.href = data;
+                    })
+                },
+                error: (data) => {
+                    console.log(data)
+                    //alert(data)
+                }
+            });
+        }
 
         const register = () => {
             let User = {
@@ -94,7 +154,7 @@
                     console.log(data)
                     //alert(data)
                     Swal.fire({
-                        text: 'Register successful',
+                        text: 'Register as member successful',
                         icon: 'success',
                         timer: 10000
                     }).then(() => {

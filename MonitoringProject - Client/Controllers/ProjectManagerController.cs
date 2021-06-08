@@ -300,11 +300,12 @@ namespace MonitoringProject___Client.Controllers
         public List<User> GetMembers()
         {
             var token = HttpContext.Session.GetString("JWToken");
+            var projectId = HttpContext.Session.GetInt32("projectId");
             if (token != null)
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync("https://localhost:44380/api/users/get-members").Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-members/{0}", projectId)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var members = result.Content.ReadAsStringAsync().Result;
@@ -322,7 +323,6 @@ namespace MonitoringProject___Client.Controllers
             var projectId = HttpContext.Session.GetInt32("projectId");
 
             int count = 0;
-            return HttpStatusCode.OK;
 
             if (token != null)
             {
@@ -355,7 +355,7 @@ namespace MonitoringProject___Client.Controllers
             }
         }
 
-        public List<User> GetProjectMembers()
+        public List<User> GetProjectMembers(int id)
         {
             var token = HttpContext.Session.GetString("JWToken");
             var projectId = HttpContext.Session.GetInt32("projectId");
@@ -363,7 +363,7 @@ namespace MonitoringProject___Client.Controllers
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-project-members/{0}", projectId)).Result;
+                var result = client.GetAsync(string.Format("https://localhost:44380/api/users/get-project-members?id={0}&taskId={1}", projectId, id)).Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var members = result.Content.ReadAsStringAsync().Result;
